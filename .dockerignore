@@ -1,0 +1,12 @@
+.git
+.gitignore
+.gitattributes
+.mvn
+target/
+*.md
+.editorconfig
+.trae
+*.iml
+*.cmd
+mvnw
+.idea
