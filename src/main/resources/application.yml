@@ -1,14 +1,3 @@
 spring:
   application:
     name: AIChat
-  ai:
-    ollama:
-      chat:
-        model: qwen3:14b
-      base-url: http://localhost:11434
-    system:
-      prompt: ""
-jwt:
-  secretKey: arookieofc
-  issue: 不会C的菜鸟
-  expiration: 3000
