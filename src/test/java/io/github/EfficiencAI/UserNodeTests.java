@@ -1,4 +1,4 @@
-﻿package io.github.EfficiencAI;
+package io.github.EfficiencAI;
 
 public class UserNodeTests {
 }

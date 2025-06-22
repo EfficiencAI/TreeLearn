@@ -1,4 +1,4 @@
-﻿package io.github.EfficiencAI.DAO;
+package io.github.EfficiencAI.DAO;
 
 public class ConversationDAO {
 }

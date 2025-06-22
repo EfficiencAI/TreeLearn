@@ -1,4 +1,73 @@
 package io.github.EfficiencAI.Entites;
 
-public class PersistentNode {
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
+
+import static io.github.EfficiencAI.utils.FileOperationUtil.makeSurePathExists;
+
+public abstract class PersistentNode {
+    private static final ObjectMapper mapper = new ObjectMapper();
+    /**
+     * 获取节点的唯一标识符，用于生成存储文件名。
+     * @return 节点的唯一标识符
+     */
+    protected abstract String getIdentifier();
+
+    /**
+     * 将当前节点实例序列化为 JSON 并存储到指定路径的文件中。
+     * @param storageFolderPath 存储节点 JSON 文件的文件夹路径
+     * @return 若序列化和存储成功返回 true，否则返回 false
+     */
+    public boolean storeSelfToFile(String storageFolderPath) {
+        // 检查存储目录是否存在，如果不存在则创建
+        String filePath = storageFolderPath + "/" + getIdentifier() + ".json";
+        makeSurePathExists(storageFolderPath);
+
+        // 检查文件是否存在，如果不存在则创建
+        File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    return false;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        // 写入文件
+        try {
+            mapper.writeValue(file, this);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 从指定路径的文件中反序列化 JSON 数据并创建节点实例。
+     * @param storageFilePath 存储节点 JSON 文件的完整路径
+     * @param clazz 节点类的 Class 对象
+     * @param <T> 节点类的类型
+     * @return 反序列化成功返回节点实例，失败返回 null
+     */
+    public static <T extends PersistentNode> T loadFromFile(String storageFilePath, Class<T> clazz) {
+        // 检查文件是否存在
+        File file = new File(storageFilePath);
+        if (!file.exists()) {
+            return null;
+        }
+
+        // 读取文件
+        try {
+            return mapper.readValue(file, clazz);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
