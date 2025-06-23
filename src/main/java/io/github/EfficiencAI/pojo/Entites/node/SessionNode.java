@@ -1,7 +1,8 @@
 package io.github.EfficiencAI.pojo.Entites.node;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.EfficiencAI.pojo.Entites.PersistentNode;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.EfficiencAI.pojo.Entites.node.Base.PersistentNode;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.HashSet;
@@ -13,16 +14,39 @@ public class SessionNode extends PersistentNode {
         AllConversationNodes = new ConcurrentHashMap<>();
         LinkedConversationNodesID = new HashSet<>();
     }
+    public SessionNode(String sessionName, String nodesStorageFolderPath) {
+        SessionName = sessionName;
+        NodesStorageFolderPath = nodesStorageFolderPath;
+        AllConversationNodes = new ConcurrentHashMap<>();
+        LinkedConversationNodesID = new HashSet<>();
+    }
+
+
     @Override @JsonIgnore
     public String getIdentifier() {
-        return SessionId;
+        return SessionName;
     }
-    @Setter
-    private String SessionId;
-    @Setter
+    @Override @JsonIgnore
+    protected boolean cascadeDelete(){
+        boolean ifAllDeleteOperationExecuteSucceed = true;
+        for (String ConversationNodeID : AllConversationNodes.keySet()) {
+            ConversationNode conversationNode = ConversationNode.loadFromFile(NodesStorageFolderPath + ConversationNodeID + ".json", ConversationNode.class);
+            if(conversationNode == null) {
+                ifAllDeleteOperationExecuteSucceed = false;
+                continue;
+            }
+            if(!conversationNode.deleteSelfFromFile(NodesStorageFolderPath)) {
+                ifAllDeleteOperationExecuteSucceed = false;
+            }
+        }
+        return ifAllDeleteOperationExecuteSucceed;
+    }
+    @Setter @JsonProperty("SessionName")
     private String SessionName;
-    @Setter
+    @Setter @JsonProperty("NodesStorageFolderPath")
     private String NodesStorageFolderPath;
+    @JsonProperty("AllConversationNodes")
     private final ConcurrentHashMap<String, ConversationNode> AllConversationNodes;
-    private final HashSet<ConversationNode> LinkedConversationNodesID;
+    @JsonProperty("LinkedConversationNodesID")
+    private final HashSet<String> LinkedConversationNodesID;
 }

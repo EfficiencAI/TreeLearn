@@ -1,4 +1,4 @@
-package io.github.EfficiencAI.pojo.Entites;
+package io.github.EfficiencAI.pojo.Entites.node.Base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.EfficiencAI.utils.FileOperationUtil;
@@ -22,7 +22,7 @@ public abstract class PersistentNode {
      * @param storageFolderPath 存储节点 JSON 文件的文件夹路径
      * @return 若序列化和存储成功返回 true，否则返回 false
      */
-    public boolean storeSelfToFile(String storageFolderPath) {
+    public boolean saveSelfToFile(String storageFolderPath) {
         // 检查存储目录是否存在，如果不存在则创建
         String filePath = storageFolderPath + "/" + getIdentifier() + ".json";
         FileOperationUtil.makeSurePathExists(storageFolderPath);
@@ -71,5 +71,25 @@ public abstract class PersistentNode {
             log.error(e.getMessage(),e);
             return null;
         }
+    }
+
+    protected abstract boolean cascadeDelete();
+
+    public boolean deleteSelfFromFile(String storageFolderPath) {
+        boolean ifAllDeleteOperationExecuteSucceed = true;
+        String filePath = storageFolderPath + "/" + getIdentifier() + ".json";
+        File file = new File(filePath);
+        if (!file.exists()) {
+            ifAllDeleteOperationExecuteSucceed = false;
+            return ifAllDeleteOperationExecuteSucceed;
+        }
+        if(!cascadeDelete()){
+            ifAllDeleteOperationExecuteSucceed = false;
+        }
+        if(!file.delete()){
+            ifAllDeleteOperationExecuteSucceed = false;
+            return ifAllDeleteOperationExecuteSucceed;
+        }
+        return ifAllDeleteOperationExecuteSucceed;
     }
 }

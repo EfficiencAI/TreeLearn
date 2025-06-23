@@ -1,7 +1,8 @@
 package io.github.EfficiencAI.pojo.Entites.node;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.EfficiencAI.pojo.Entites.PersistentNode;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.EfficiencAI.pojo.Entites.node.Base.PersistentNode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,21 +13,38 @@ public class ConversationNode extends PersistentNode {
     public ConversationNode() {
         LinkedConversationNodesID = new HashSet<>();
     }
+    public ConversationNode(String conversationNodeID, String contextStartIdx, String contextEndIdx, String userMessage, String AIMessage) {
+        this.ConversationNodeID = conversationNodeID;
+        this.ContextStartIdx = contextStartIdx;
+        this.ContextEndIdx = contextEndIdx;
+        this.UserMessage = userMessage;
+        this.AIMessage = AIMessage;
+        this.LinkedConversationNodesID = new HashSet<>();
+    }
     @Override @JsonIgnore
     public String getIdentifier() {
         return ConversationNodeID;
     }
-    @Setter
+    @Override @JsonIgnore
+    protected boolean cascadeDelete(){
+        /*
+            由于ConversationNode不能跳过SessionNode获取到子节点
+            因此对话节点的连锁删除逻辑移至DAO中实现
+            此处仅返回true
+         */
+        return true;
+    }
+    @Setter @JsonProperty("ConversationNodeID")
     private String ConversationNodeID;
-    @Setter
+    @Setter @JsonProperty("ContextStartIdx")
     private String ContextStartIdx;
-    @Setter
+    @Setter @JsonProperty("ContextEndIdx")
     private String ContextEndIdx;
-    @Setter
+    @Setter @JsonProperty("UserMessage")
     private String UserMessage;
-    @Setter
+    @Setter @JsonProperty("AIMessage")
     private String AIMessage;
-
-    private HashSet<ConversationNode> LinkedConversationNodesID = null;
+    @JsonProperty("LinkedConversationNodesID")
+    private HashSet<String> LinkedConversationNodesID = null;
 
 }
