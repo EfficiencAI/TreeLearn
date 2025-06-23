@@ -1,6 +1,6 @@
 package io.github.EfficiencAI;
 
-import io.github.EfficiencAI.Entites.ConversationNode;
+import io.github.EfficiencAI.pojo.Entites.node.ConversationNode;
 
 public class ConversationNodeTests {
     public static void main(String[] args) {

@@ -1,10 +1,10 @@
-package site.arookieofc.aichat.controller;
+package io.github.EfficiencAI.controller;
 
+import io.github.EfficiencAI.pojo.VO.ChatRequestVO;
+import io.github.EfficiencAI.service.AiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-import site.arookieofc.aichat.pojo.VO.ChatRequestVO;
-import site.arookieofc.aichat.service.AiService;
 
 @RestController
 @RequestMapping(value = "/ai")

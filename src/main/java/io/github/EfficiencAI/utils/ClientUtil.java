@@ -1,9 +1,9 @@
-package site.arookieofc.aichat.utils;
+package io.github.EfficiencAI.utils;
 
+import io.github.EfficiencAI.pojo.DTO.ChatRequestDTO;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.api.OpenAiApi;
-import site.arookieofc.aichat.pojo.DTO.ChatRequestDTO;
 
 public class ClientUtil {
 

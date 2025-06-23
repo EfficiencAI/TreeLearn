@@ -1,4 +1,4 @@
-package site.arookieofc.aichat.config;
+package io.github.EfficiencAI.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

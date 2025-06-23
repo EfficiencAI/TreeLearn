@@ -1,4 +1,4 @@
-package site.arookieofc.aichat.pojo.VO;
+package io.github.EfficiencAI.pojo.VO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

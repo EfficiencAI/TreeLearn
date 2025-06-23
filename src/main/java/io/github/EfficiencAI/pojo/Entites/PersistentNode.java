@@ -1,14 +1,16 @@
-package io.github.EfficiencAI.Entites;
+package io.github.EfficiencAI.pojo.Entites;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.EfficiencAI.utils.FileOperationUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
 
-import static io.github.EfficiencAI.utils.FileOperationUtil.makeSurePathExists;
-
+@Slf4j
 public abstract class PersistentNode {
     private static final ObjectMapper mapper = new ObjectMapper();
+
     /**
      * 获取节点的唯一标识符，用于生成存储文件名。
      * @return 节点的唯一标识符
@@ -23,7 +25,7 @@ public abstract class PersistentNode {
     public boolean storeSelfToFile(String storageFolderPath) {
         // 检查存储目录是否存在，如果不存在则创建
         String filePath = storageFolderPath + "/" + getIdentifier() + ".json";
-        makeSurePathExists(storageFolderPath);
+        FileOperationUtil.makeSurePathExists(storageFolderPath);
 
         // 检查文件是否存在，如果不存在则创建
         File file = new File(filePath);
@@ -33,7 +35,7 @@ public abstract class PersistentNode {
                     return false;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error(e.getMessage(),e);
                 return false;
             }
         }
@@ -43,7 +45,7 @@ public abstract class PersistentNode {
             mapper.writeValue(file, this);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
             return false;
         }
     }
@@ -66,7 +68,7 @@ public abstract class PersistentNode {
         try {
             return mapper.readValue(file, clazz);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
             return null;
         }
     }

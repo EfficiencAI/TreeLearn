@@ -1,7 +1,7 @@
-package site.arookieofc.aichat.service;
+package io.github.EfficiencAI.service;
 
+import io.github.EfficiencAI.pojo.DTO.ChatRequestDTO;
 import reactor.core.publisher.Flux;
-import site.arookieofc.aichat.pojo.DTO.ChatRequestDTO;
 
 public interface AiService {
     Flux<String> chat(ChatRequestDTO chatRequestDTO);

@@ -1,7 +1,7 @@
-package site.arookieofc.aichat.pojo.VO;
+package io.github.EfficiencAI.pojo.VO;
 
+import io.github.EfficiencAI.pojo.DTO.ChatRequestDTO;
 import lombok.Data;
-import site.arookieofc.aichat.pojo.DTO.ChatRequestDTO;
 
 @Data
 public class ChatRequestVO {

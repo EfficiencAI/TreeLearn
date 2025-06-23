@@ -1,12 +1,10 @@
 package io.github.EfficiencAI.utils;
 
+import java.io.File;
+
 public class FileOperationUtil {
     public static boolean makeSurePathExists(String path){
-        java.io.File dir = new java.io.File(path);
-        if (!dir.exists()) {
-            return dir.mkdirs();
-        }else {
-            return true;
-        }
+        File dir = new File(path);
+        return dir.exists() || dir.mkdirs();
     }
 }
