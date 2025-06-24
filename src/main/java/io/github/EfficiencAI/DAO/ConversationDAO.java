@@ -885,11 +885,13 @@ public class ConversationDAO {
         //持久化删除对话节点下所有子节点
         boolean ifAllDeleteOperationExecuteSucceed = true;
         for (String childConversationNodeID : conversationNode.getLinkedConversationNodesID()) {
+            //获取子对话节点
             ConversationNode childConversationNode = sessionNode.getAllConversationNodes().get(childConversationNodeID);
             if (childConversationNode == null) {
                 ifAllDeleteOperationExecuteSucceed = false;
                 continue;
             }
+            //递归删除子对话节点下所有子节点
             if(!childConversationNode.getLinkedConversationNodesID().isEmpty()){
                 if(!deleteConversationNode(userID, sessionName, childConversationNodeID).ifSuccess){
                     ifAllDeleteOperationExecuteSucceed = false;
@@ -898,6 +900,7 @@ public class ConversationDAO {
             if(!childConversationNode.deleteSelfFromFile(sessionNode.getNodesStorageFolderPath())){
                 ifAllDeleteOperationExecuteSucceed = false;
             }
+            conversationNode.getLinkedConversationNodesID().remove(childConversationNodeID);
             if(sessionNode.getAllConversationNodesID().remove(childConversationNodeID)){
                 sessionNode.getAllConversationNodes().remove(childConversationNodeID);
             }else{
