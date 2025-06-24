@@ -13,7 +13,7 @@ public class ClientController {
     @Autowired
     private AiService aiService;
 
-    @GetMapping("/chat")
+    @PostMapping("/chat")
     public Flux<String> chat(@RequestBody ChatRequestVO chatRequestVO) {
         return aiService.chat(chatRequestVO.toDTO());
     }

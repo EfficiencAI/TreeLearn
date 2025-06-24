@@ -6,7 +6,6 @@ import lombok.Data;
 
 @Data
 public class ConversationRequestVO {
-    // NodeRequestVO 字段
     private String userId;
     private String sessionName;
     private String conversationNodeId;
@@ -14,8 +13,7 @@ public class ConversationRequestVO {
     private String userMessage;
     private String contextStartIdx;
     private String contextEndIdx;
-    
-    // ChatRequestVO 字段
+
     private String message;
     private String apikey;
     private String baseurl;
@@ -25,6 +23,9 @@ public class ConversationRequestVO {
     public NodeRequestDTO toNodeRequestDTO() {
         return NodeRequestDTO
                 .builder()
+                .userId(userId)
+                .sessionName(sessionName)
+                .conversationNodeId(conversationNodeId)
                 .parentId(parentId)
                 .userMessage(userMessage)
                 .contextStartIdx(contextStartIdx)
