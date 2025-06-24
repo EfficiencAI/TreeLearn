@@ -721,6 +721,55 @@ public class ConversationDAO {
     }
 
     /**
+     * 获取对话节点信息
+     * @param userID 用户ID（唯一标识符）
+     * @param sessionName 会话名称（唯一标识符）
+     * @param conversationNodeID 对话节点ID（唯一标识符）
+     * @return 对话操作结果
+     */
+    public NodeOperationResult<ConversationNode> getConversationNode(String userID, String sessionName, String conversationNodeID) {
+        //获取会话节点
+        SessionNode sessionNode;
+        if ((sessionNode = getSessionNodeSafetyWithCache(userID, sessionName)) == null) {
+            return figureOutGetSessionNodeFailureReason(userID, sessionName);
+        }
+        //检查对话节点ID是否存在
+        if (conversationNodeID == null) {
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.GET,
+                    null,
+                    false,
+                    "对话ID传输出错"
+            );
+        }
+        if (!sessionNode.getAllConversationNodes().containsKey(conversationNodeID)) {
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.GET,
+                    null,
+                    false,
+                    "对话节点不存在"
+            );
+        }
+        //获取对话节点信息
+        ConversationNode conversationNode = sessionNode.getAllConversationNodes().get(conversationNodeID);
+        if (conversationNode == null) {
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.GET,
+                    null,
+                    false,
+                    "对话节点获取失败"
+            );
+        }
+        //返回对话信息
+        return new NodeOperationResult<>(
+                NodeOperationResult.OperationType.GET,
+                conversationNode,
+                true,
+                "对话节点获取成功"
+        );
+    }
+
+    /**
      * 删除对话节点
      * @param userID 用户ID（唯一标识符）
      * @param sessionName 会话名称（唯一标识符）
