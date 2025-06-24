@@ -530,7 +530,7 @@ public class ConversationDAO {
         if(parentId.equals("-1")){
             boolean hasFoundAvailableID = false;
             for(IDElementComposition idElementComposition : IDElementComposition.values()){
-                if(!sessionNode.getLinkedConversationNodesID().contains(idElementComposition.toString())){
+                if(!sessionNode.getAllConversationNodes().containsKey(idElementComposition.toString())){
                     hasFoundAvailableID = true;
                     newConversationNodeID = idElementComposition.toString();
                     break;
@@ -565,7 +565,7 @@ public class ConversationDAO {
             }
             boolean hasFoundAvailableID = false;
             for(IDElementComposition idElementComposition : IDElementComposition.values()){
-                if(!sessionNode.getLinkedConversationNodesID().contains(parentId + idElementComposition)){
+                if(!sessionNode.getAllConversationNodes().containsKey(parentId + idElementComposition)){
                     hasFoundAvailableID = true;
                     newConversationNodeID = parentId + idElementComposition;
                     break;
