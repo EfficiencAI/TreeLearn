@@ -11,14 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class SessionNode extends PersistentNode {
     public SessionNode() {
-        AllConversationNodes = new ConcurrentHashMap<>();
-        LinkedConversationNodesID = new HashSet<>();
+        allConversationNodes = new ConcurrentHashMap<>();
+        linkedConversationNodesID = new HashSet<>();
     }
     public SessionNode(String sessionName, String nodesStorageFolderPath) {
         SessionName = sessionName;
         NodesStorageFolderPath = nodesStorageFolderPath;
-        AllConversationNodes = new ConcurrentHashMap<>();
-        LinkedConversationNodesID = new HashSet<>();
+        allConversationNodes = new ConcurrentHashMap<>();
+        linkedConversationNodesID = new HashSet<>();
     }
 
 
@@ -29,7 +29,7 @@ public class SessionNode extends PersistentNode {
     @Override @JsonIgnore
     protected boolean cascadeDelete(){
         boolean ifAllDeleteOperationExecuteSucceed = true;
-        for (String ConversationNodeID : AllConversationNodes.keySet()) {
+        for (String ConversationNodeID : allConversationNodes.keySet()) {
             ConversationNode conversationNode = ConversationNode.loadFromFile(NodesStorageFolderPath + ConversationNodeID + ".json", ConversationNode.class);
             if(conversationNode == null) {
                 ifAllDeleteOperationExecuteSucceed = false;
@@ -46,7 +46,7 @@ public class SessionNode extends PersistentNode {
     @Setter @JsonProperty("NodesStorageFolderPath")
     private String NodesStorageFolderPath;
     @JsonProperty("AllConversationNodes")
-    private final ConcurrentHashMap<String, ConversationNode> AllConversationNodes;
+    private final ConcurrentHashMap<String, ConversationNode> allConversationNodes;
     @JsonProperty("LinkedConversationNodesID")
-    private final HashSet<String> LinkedConversationNodesID;
+    private final HashSet<String> linkedConversationNodesID;
 }

@@ -5,6 +5,9 @@ import lombok.Data;
 
 @Data
 public class NodeRequestVO {
+    private String userId;
+    private String sessionName;
+    private String conversationNodeId;
     private String parentId;
     private String userMessage;
     private String contextStartIdx;
@@ -13,6 +16,9 @@ public class NodeRequestVO {
     public NodeRequestDTO toDTO(){
         return NodeRequestDTO
                 .builder()
+                .userId(userId)
+                .sessionName(sessionName)
+                .conversationNodeId(conversationNodeId)
                 .parentId(parentId)
                 .userMessage(userMessage)
                 .contextStartIdx(contextStartIdx)

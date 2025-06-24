@@ -12,13 +12,13 @@ import java.util.HashSet;
 @EqualsAndHashCode(callSuper = false)
 public class UserNode extends PersistentNode {
     public UserNode() {
-        SessionNames = new HashSet<>();
+        sessionNames = new HashSet<>();
     }
     public UserNode(String UserId, String UserName, String SessionsStorageFolderPath) {
         this.UserId = UserId;
         this.UserName = UserName;
         this.SessionsStorageFolderPath = SessionsStorageFolderPath;
-        this.SessionNames = new HashSet<>();
+        this.sessionNames = new HashSet<>();
     }
     @JsonProperty("UserId")
     private String UserId;
@@ -27,7 +27,7 @@ public class UserNode extends PersistentNode {
     @JsonProperty("SessionsStorageFolderPath")
     private String SessionsStorageFolderPath;
     @JsonProperty("SessionNames")
-    private HashSet<String> SessionNames;
+    private HashSet<String> sessionNames;
 
     @Override @JsonIgnore
     public String getIdentifier() {
@@ -36,7 +36,7 @@ public class UserNode extends PersistentNode {
     @Override @JsonIgnore
     protected boolean cascadeDelete() {
         boolean ifAllDeleteOperationExecuteSucceed = true;
-        for (String SessionName : SessionNames) {
+        for (String SessionName : sessionNames) {
             SessionNode sessionNode = SessionNode.loadFromFile(SessionsStorageFolderPath + "/" + SessionName, SessionNode.class);
             if (sessionNode == null) {
                 ifAllDeleteOperationExecuteSucceed = false;

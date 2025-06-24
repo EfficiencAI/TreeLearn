@@ -15,6 +15,6 @@ public class ClientController {
 
     @GetMapping("/chat")
     public Flux<String> chat(@RequestBody ChatRequestVO chatRequestVO) {
-        return aiService.chat(chatRequestVO.toChatRequestDTO());
+        return aiService.chat(chatRequestVO.toDTO());
     }
 }

@@ -11,7 +11,7 @@ import java.util.HashSet;
 @Getter
 public class ConversationNode extends PersistentNode {
     public ConversationNode() {
-        LinkedConversationNodesID = new HashSet<>();
+        linkedConversationNodesID = new HashSet<>();
     }
     public ConversationNode(String conversationNodeID, String contextStartIdx, String contextEndIdx, String userMessage, String AIMessage) {
         this.ConversationNodeID = conversationNodeID;
@@ -19,7 +19,7 @@ public class ConversationNode extends PersistentNode {
         this.ContextEndIdx = contextEndIdx;
         this.UserMessage = userMessage;
         this.AIMessage = AIMessage;
-        this.LinkedConversationNodesID = new HashSet<>();
+        this.linkedConversationNodesID = new HashSet<>();
     }
     @Override @JsonIgnore
     public String getIdentifier() {
@@ -45,6 +45,6 @@ public class ConversationNode extends PersistentNode {
     @Setter @JsonProperty("AIMessage")
     private String AIMessage;
     @JsonProperty("LinkedConversationNodesID")
-    private HashSet<String> LinkedConversationNodesID = null;
+    private HashSet<String> linkedConversationNodesID = null;
 
 }

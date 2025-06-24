@@ -1,0 +1,474 @@
+{
+  "info": {
+    "_postman_id": "aichat-api-collection",
+    "name": "AIChat API Collection",
+    "description": "AIChat后端API接口集合",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "用户管理",
+      "item": [
+        {
+          "name": "创建用户",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/create?userId={{userId}}&userName={{userName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "create"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "userName",
+                  "value": "{{userName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "获取用户",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/get?userId={{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "get"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "更新用户",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/update?userId={{userId}}&newUserName={{newUserName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "update"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "newUserName",
+                  "value": "{{newUserName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "删除用户",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/delete?userId={{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "delete"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "会话管理",
+      "item": [
+        {
+          "name": "创建会话",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/session/create?userId={{userId}}&sessionName={{sessionName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "session",
+                "create"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "sessionName",
+                  "value": "{{sessionName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "获取会话",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/session/get?userId={{userId}}&sessionName={{sessionName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "session",
+                "get"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "sessionName",
+                  "value": "{{sessionName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "更新会话",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/session/update?userId={{userId}}&sessionName={{sessionName}}&newSessionName={{newSessionName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "session",
+                "update"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "sessionName",
+                  "value": "{{sessionName}}"
+                },
+                {
+                  "key": "newSessionName",
+                  "value": "{{newSessionName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "删除会话",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/session/delete?userId={{userId}}&sessionName={{sessionName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "session",
+                "delete"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "sessionName",
+                  "value": "{{sessionName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "对话节点管理",
+      "item": [
+        {
+          "name": "添加对话节点",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"sessionName\": \"{{sessionName}}\",\n  \"parentId\": \"parent-node-001\",\n  \"userMessage\": \"用户输入的消息内容\",\n  \"contextStartIdx\": \"0\",\n  \"contextEndIdx\": \"10\",\n  \"message\": \"用户输入的消息内容\",\n  \"apikey\": \"{{apikey}}\",\n  \"baseurl\": \"{{baseurl}}\",\n  \"modelName\": \"{{modelName}}\",\n  \"systemPrompt\": \"你是一个有用的AI助手\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/conversation/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "conversation",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "更新对话节点",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"sessionName\": \"{{sessionName}}\",\n  \"conversationNodeId\": \"{{conversationNodeId}}\",\n  \"parentId\": \"parent-node-001\",\n  \"userMessage\": \"更新后的消息内容\",\n  \"contextStartIdx\": \"0\",\n  \"contextEndIdx\": \"15\",\n  \"message\": \"更新后的消息内容\",\n  \"apikey\": \"{{apikey}}\",\n  \"baseurl\": \"{{baseurl}}\",\n  \"modelName\": \"{{modelName}}\",\n  \"systemPrompt\": \"你是一个有用的AI助手\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/conversation/update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "conversation",
+                "update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "获取对话节点",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/conversation/get/{{conversationNodeId}}?userId={{userId}}&sessionName={{sessionName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "conversation",
+                "get",
+                "{{conversationNodeId}}"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "sessionName",
+                  "value": "{{sessionName}}"
+                }
+              ]
+            },
+            "response": []
+          }
+        },
+        {
+          "name": "删除对话节点",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/user/conversation/delete/{{conversationNodeId}}?userId={{userId}}&sessionName={{sessionName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "conversation",
+                "delete",
+                "{{conversationNodeId}}"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "sessionName",
+                  "value": "{{sessionName}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI聊天接口",
+      "item": [
+        {
+          "name": "发送聊天消息",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"你好，请介绍一下自己\",\n  \"apikey\": \"{{apikey}}\",\n  \"baseurl\": \"{{baseurl}}\",\n  \"modelName\": \"{{modelName}}\",\n  \"userId\": \"{{userId}}\",\n  \"sessionName\": \"{{sessionName}}\",\n  \"systemPrompt\": \"你是一个有用的AI助手\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "apikey",
+      "value": "sk-kuvykaxnntxkcqipwyleneauabfndimvyylryphezdevcjak",
+      "type": "string"
+    },
+    {
+      "key": "baseurl",
+      "value": "https://api.siliconflow.cn/",
+      "type": "string"
+    },
+    {
+      "key": "modelName",
+      "value": "deepseek-ai/DeepSeek-R1",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "test-user-001",
+      "type": "string"
+    },
+    {
+      "key": "userName",
+      "value": "测试用户",
+      "type": "string"
+    },
+    {
+      "key": "newUserName",
+      "value": "新的用户名",
+      "type": "string"
+    },
+    {
+      "key": "sessionName",
+      "value": "测试会话",
+      "type": "string"
+    },
+    {
+      "key": "newSessionName",
+      "value": "新的会话名称",
+      "type": "string"
+    },
+    {
+      "key": "conversationNodeId",
+      "value": "node-001",
+      "type": "string"
+    }
+  ]
+}

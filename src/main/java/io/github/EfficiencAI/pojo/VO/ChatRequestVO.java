@@ -13,7 +13,7 @@ public class ChatRequestVO {
     private String sessionName; // 新增会话名称
     private String systemPrompt;
 
-    public ChatRequestDTO toChatRequestDTO() {
+    public ChatRequestDTO toDTO() {
         return ChatRequestDTO
                 .builder()
                 .apikey(apikey)
