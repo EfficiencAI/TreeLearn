@@ -362,6 +362,9 @@ public class ConversationDAO {
             );
         }
 
+        //更新用户节点
+        userNode.getSessionNames().add(newSessionName);
+
         //返回会话创建结果
         return new NodeOperationResult<>(
                 NodeOperationResult.OperationType.CREATE,
@@ -448,6 +451,9 @@ public class ConversationDAO {
                     "新会话信息保存失败"
             );
         }
+        // 更新用户节点
+        userNode.getSessionNames().remove(sessionName);
+        userNode.getSessionNames().add(newSessionName);
 
         // 删除旧会话信息
         if(!deleteSession(userID, sessionName).ifSuccess){
@@ -594,6 +600,16 @@ public class ConversationDAO {
                     null,
                     false,
                     "对话节点保存失败"
+            );
+        }
+
+        //更新会话节点
+        if(!sessionNode.getLinkedConversationNodesID().add(newConversationNodeID)){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.CREATE,
+                    null,
+                    false,
+                    "对话节点更新失败"
             );
         }
 
@@ -762,6 +778,16 @@ public class ConversationDAO {
         }
         sessionNode.getAllConversationNodes().remove(conversationNodeID);
 
+        //更新会话节点
+        if(!sessionNode.getLinkedConversationNodesID().remove(conversationNodeID)){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.DELETE,
+                    null,
+                    false,
+                    "删除对话节点时，索引更新失败"
+            );
+        }
+
         //返回操作结果
         return new NodeOperationResult<>(
                 NodeOperationResult.OperationType.DELETE,
@@ -797,6 +823,16 @@ public class ConversationDAO {
                     null,
                     false,
                     "会话信息删除失败"
+            );
+        }
+
+        //更新用户节点
+        if(!userNode.getSessionNames().remove(sessionName)){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.DELETE,
+                    null,
+                    false,
+                    "删除会话节点时，索引更新失败"
             );
         }
 
