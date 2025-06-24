@@ -452,7 +452,7 @@ public class ConversationDAO {
 
         // 修改会话名称并保存新会话信息
         sessionNode.setSessionName(newSessionName);
-        if(!sessionNode.saveSelfToFile(userNode.getSessionsStorageFolderPath() + newSessionName + ".json")){
+        if(!sessionNode.saveSelfToFile(userNode.getSessionsStorageFolderPath())){
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.MODIFY,
                     null,
@@ -653,7 +653,7 @@ public class ConversationDAO {
             }
             //持久化更新父节点连接数组
             parentConversationNode.getLinkedConversationNodesID().add(newConversationNodeID);
-            if(!parentConversationNode.saveSelfToFile(sessionNode.getNodesStorageFolderPath() + parentId + ".json")){
+            if(!parentConversationNode.saveSelfToFile(sessionNode.getNodesStorageFolderPath())){
                 return new NodeOperationResult<>(
                         NodeOperationResult.OperationType.CREATE,
                         null,
@@ -761,7 +761,7 @@ public class ConversationDAO {
         conversationNode.setAIMessage(AIMessage);
 
         //持久化更新对话节点信息
-        if(!conversationNode.saveSelfToFile(sessionNode.getNodesStorageFolderPath() + conversationNodeID + ".json")){
+        if(!conversationNode.saveSelfToFile(sessionNode.getNodesStorageFolderPath())){
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.MODIFY,
                     null,
