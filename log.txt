@@ -1,0 +1,3 @@
+sk-kuvykaxnntxkcqipwyleneauabfndimvyylryphezdevcjak
+https://api.siliconflow.cn/v1/chat/completions
+deepseek-ai/DeepSeek-R1

@@ -7,7 +7,9 @@ import io.github.EfficiencAI.pojo.Entites.node.UserNode;
 import io.github.EfficiencAI.pojo.VO.NodeOperationResult;
 import io.github.EfficiencAI.utils.Cache.ConversationDAOCache;
 import io.github.EfficiencAI.utils.IDElementComposition;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ConversationDAO {
     public ConversationDAO() {
         nodesCache = new ConversationDAOCache();

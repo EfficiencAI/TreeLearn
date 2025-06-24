@@ -7,11 +7,12 @@ import org.springframework.ai.openai.api.OpenAiApi;
 
 public class ClientUtil {
 
-    public static ChatClient openAiChatClient(ChatRequestDTO chatRequestDTO) {
-        return ChatClient
-                .builder(openAiChatModel(chatRequestDTO))
-                .build();
+    public static ChatClient chatClient(ChatRequestDTO chatRequestDTO){
+       return ChatClient
+               .builder(openAiChatModel(chatRequestDTO))
+               .build();
     }
+
 
     private static OpenAiChatModel openAiChatModel(ChatRequestDTO chatRequestDTO) {
         return OpenAiChatModel

@@ -1,4 +1,4 @@
-package site.arookieofc.aichat;
+package io.github.EfficiencAI;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

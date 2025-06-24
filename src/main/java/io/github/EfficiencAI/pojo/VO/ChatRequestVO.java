@@ -10,6 +10,7 @@ public class ChatRequestVO {
     private String baseurl;
     private String modelName;
     private String userId;
+    private String sessionName; // 新增会话名称
     private String systemPrompt;
 
     public ChatRequestDTO toChatRequestDTO() {

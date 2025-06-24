@@ -1,0 +1,4 @@
+ai:
+  baseurl: http://127.0.0.1:11434
+  apikey:
+  modelName: qwen3:14b
