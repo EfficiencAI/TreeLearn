@@ -762,6 +762,22 @@ public class ConversationDAO {
             );
         }
 
+        //删除所有子节点
+        boolean ifAllDeleteOperationExecuteSucceed = true;
+        for (String childConversationNodeID : conversationNode.getLinkedConversationNodesID()) {
+            if(!deleteConversationNode(userID, sessionName, childConversationNodeID).ifSuccess){
+                ifAllDeleteOperationExecuteSucceed = false;
+            }
+        }
+        if(!ifAllDeleteOperationExecuteSucceed){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.MODIFY,
+                    null,
+                    false,
+                    "更新对话节点时，部分子对话节点删除失败"
+            );
+        }
+
         //返回对话信息
         return new NodeOperationResult<>(
                 NodeOperationResult.OperationType.MODIFY,
@@ -885,7 +901,7 @@ public class ConversationDAO {
         //更新会话节点
         sessionNode.getAllConversationNodes().remove(conversationNodeID);
         //更新父节点
-        if(conversationNodeID.equals("-1")){
+        if(conversationNodeID.length() == 1){
             if(!sessionNode.getLinkedConversationNodesID().remove(conversationNodeID)){
                 return new NodeOperationResult<>(
                         NodeOperationResult.OperationType.DELETE,
