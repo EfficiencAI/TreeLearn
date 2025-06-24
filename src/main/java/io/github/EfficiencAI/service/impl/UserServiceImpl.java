@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
                 .flatMapMany(aiResponseList -> {
                     String aiResponse = String.join("", aiResponseList);
                     // 保存对话节点
-                    NodeOperationResult<ConversationNode> result = conversationDAO.addNewConversationNode(
+                    NodeOperationResult<ConversationNode> result = conversationDAO.newConversationNode(
                             nodeRequestDTO.getUserId(), 
                             nodeRequestDTO.getSessionName(), 
                             nodeRequestDTO.getParentId(),

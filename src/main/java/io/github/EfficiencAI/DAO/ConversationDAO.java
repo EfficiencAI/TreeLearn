@@ -505,7 +505,7 @@ public class ConversationDAO {
      * @param AIMessage AI消息
      * @return 对话操作结果
      */
-    public NodeOperationResult<ConversationNode> addNewConversationNode(String userID, String sessionName, String parentId, String contextStartIdx, String contextEndIdx, String userMessage, String AIMessage) {
+    public NodeOperationResult<ConversationNode> newConversationNode(String userID, String sessionName, String parentId, String contextStartIdx, String contextEndIdx, String userMessage, String AIMessage) {
         //获取用户节点
         UserNode userNode;
         if((userNode = getUserNodeSafetyWithCache(userID)) == null){
@@ -628,8 +628,31 @@ public class ConversationDAO {
 
         //更新会话节点
         sessionNode.getAllConversationNodes().put(newConversationNodeID, newConversationNode);
+        //更新父节点
         if(parentId.equals("-1")){
+            //更新会话节点连接数组
             sessionNode.getLinkedConversationNodesID().add(newConversationNodeID);
+        }else {
+            //更新父节点连接数组
+            ConversationNode parentConversationNode = sessionNode.getAllConversationNodes().get(parentId);
+            if(parentConversationNode == null){
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.CREATE,
+                        null,
+                        false,
+                        "父节点信息获取失败"
+                );
+            }
+            //持久化更新父节点连接数组
+            parentConversationNode.getLinkedConversationNodesID().add(newConversationNodeID);
+            if(!parentConversationNode.saveSelfToFile(sessionNode.getNodesStorageFolderPath() + parentId + ".json")){
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.CREATE,
+                        null,
+                        false,
+                        "父节点保存失败"
+                );
+            }
         }
         //持久化会话节点
         if(!sessionNode.saveSelfToFile(userNode.getSessionsStorageFolderPath())){
@@ -858,17 +881,41 @@ public class ConversationDAO {
         if(!conversationNode.deleteSelfFromFile(sessionNode.getNodesStorageFolderPath())){
             ifAllDeleteOperationExecuteSucceed = false;
         }
-        sessionNode.getAllConversationNodes().remove(conversationNodeID);
 
         //更新会话节点
-        if(!sessionNode.getLinkedConversationNodesID().remove(conversationNodeID)){
-            return new NodeOperationResult<>(
-                    NodeOperationResult.OperationType.DELETE,
-                    null,
-                    false,
-                    "删除对话节点时，索引更新失败"
-            );
+        sessionNode.getAllConversationNodes().remove(conversationNodeID);
+        //更新父节点
+        if(conversationNodeID.equals("-1")){
+            if(!sessionNode.getLinkedConversationNodesID().remove(conversationNodeID)){
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.DELETE,
+                        null,
+                        false,
+                        "删除对话节点时，索引更新失败"
+                );
+            }
+        }else{
+            String parentConversationNodeID = conversationNodeID.substring(0, conversationNodeID.length() - 1);
+            ConversationNode parentConversationNode = sessionNode.getAllConversationNodes().get(parentConversationNodeID);
+            if(parentConversationNode == null){
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.DELETE,
+                        null,
+                        false,
+                        "删除对话节点时，父节点获取失败"
+                );
+            }
+            if(!parentConversationNode.getLinkedConversationNodesID().remove(conversationNodeID)) {
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.DELETE,
+                        null,
+                        false,
+                        "删除对话节点时，索引更新失败"
+                );
+            }
         }
+
+
         //持久化更新会话节点
         if(!sessionNode.saveSelfToFile(userNode.getSessionsStorageFolderPath())){
             return new NodeOperationResult<>(
