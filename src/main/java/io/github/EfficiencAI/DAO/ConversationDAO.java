@@ -364,6 +364,15 @@ public class ConversationDAO {
 
         //更新用户节点
         userNode.getSessionNames().add(newSessionName);
+        //持久化用户节点
+        if(!userNode.saveSelfToFile(USER_NODE_STORAGE_PATH)){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.CREATE,
+                    null,
+                    false,
+                    "会话索引保存失败"
+            );
+        }
 
         //返回会话创建结果
         return new NodeOperationResult<>(
@@ -454,6 +463,15 @@ public class ConversationDAO {
         // 更新用户节点
         userNode.getSessionNames().remove(sessionName);
         userNode.getSessionNames().add(newSessionName);
+        // 持久化用户节点
+        if(!userNode.saveSelfToFile(USER_NODE_STORAGE_PATH)){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.MODIFY,
+                    null,
+                    false,
+                    "会话索引更新失败"
+            );
+        }
 
         // 删除旧会话信息
         if(!deleteSession(userID, sessionName).ifSuccess){
@@ -488,6 +506,11 @@ public class ConversationDAO {
      * @return 对话操作结果
      */
     public NodeOperationResult<ConversationNode> addNewConversationNode(String userID, String sessionName, String parentId, String contextStartIdx, String contextEndIdx, String userMessage, String AIMessage) {
+        //获取用户节点
+        UserNode userNode;
+        if((userNode = getUserNodeSafetyWithCache(userID)) == null){
+            return figureOutGetUserNodeFailureReason(userID);
+        }
         //获取会话节点
         SessionNode sessionNode;
         if((sessionNode = getSessionNodeSafetyWithCache(userID, sessionName)) == null){
@@ -610,6 +633,15 @@ public class ConversationDAO {
                     null,
                     false,
                     "对话节点更新失败"
+            );
+        }
+        //持久化会话节点
+        if(!sessionNode.saveSelfToFile(userNode.getSessionsStorageFolderPath())){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.CREATE,
+                    null,
+                    false,
+                    "对话节点索引保存失败"
             );
         }
 
@@ -777,6 +809,11 @@ public class ConversationDAO {
      * @return 对话操作结果
      */
     public NodeOperationResult<ConversationNode> deleteConversationNode(String userID, String sessionName, String conversationNodeID) {
+        //获取用户节点
+        UserNode userNode;
+        if((userNode = getUserNodeSafetyWithCache(userID)) == null){
+            return figureOutGetUserNodeFailureReason(userID);
+        }
         //获取会话节点
         SessionNode sessionNode;
         if((sessionNode = getSessionNodeSafetyWithCache(userID, sessionName)) == null){
@@ -836,6 +873,15 @@ public class ConversationDAO {
                     "删除对话节点时，索引更新失败"
             );
         }
+        //持久化更新会话节点
+        if(!sessionNode.saveSelfToFile(userNode.getSessionsStorageFolderPath())){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.DELETE,
+                    null,
+                    false,
+                    "对话节点索引保存失败"
+            );
+        }
 
         //返回操作结果
         return new NodeOperationResult<>(
@@ -882,6 +928,15 @@ public class ConversationDAO {
                     null,
                     false,
                     "删除会话节点时，索引更新失败"
+            );
+        }
+        //持久化用户节点
+        if(!userNode.saveSelfToFile(userNode.getSessionsStorageFolderPath())){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.DELETE,
+                    null,
+                    false,
+                    "用户节点索引保存失败"
             );
         }
 
