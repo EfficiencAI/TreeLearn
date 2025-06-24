@@ -627,13 +627,9 @@ public class ConversationDAO {
         }
 
         //更新会话节点
-        if(!sessionNode.getLinkedConversationNodesID().add(newConversationNodeID)){
-            return new NodeOperationResult<>(
-                    NodeOperationResult.OperationType.CREATE,
-                    null,
-                    false,
-                    "对话节点更新失败"
-            );
+        sessionNode.getAllConversationNodes().put(newConversationNodeID, newConversationNode);
+        if(parentId.equals("-1")){
+            sessionNode.getLinkedConversationNodesID().add(newConversationNodeID);
         }
         //持久化会话节点
         if(!sessionNode.saveSelfToFile(userNode.getSessionsStorageFolderPath())){
