@@ -617,7 +617,7 @@ public class ConversationDAO {
         );
 
         //持久化对话节点
-        if(!newConversationNode.saveSelfToFile(sessionNode.getNodesStorageFolderPath() + newConversationNodeID + ".json")){
+        if(!newConversationNode.saveSelfToFile(sessionNode.getNodesStorageFolderPath())){
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.CREATE,
                     null,
