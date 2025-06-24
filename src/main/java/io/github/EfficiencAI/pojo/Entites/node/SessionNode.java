@@ -11,14 +11,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Getter
 public class SessionNode extends PersistentNode {
     public SessionNode() {
-        allConversationNodes = new ConcurrentHashMap<>();
-        linkedConversationNodesID = new HashSet<>();
+        this.allConversationNodes = new ConcurrentHashMap<>();
+        this.allConversationNodesID = new HashSet<>();
+        this.linkedConversationNodesID = new HashSet<>();
     }
     public SessionNode(String sessionName, String nodesStorageFolderPath) {
-        SessionName = sessionName;
-        NodesStorageFolderPath = nodesStorageFolderPath;
-        allConversationNodes = new ConcurrentHashMap<>();
-        linkedConversationNodesID = new HashSet<>();
+        this.SessionName = sessionName;
+        this.NodesStorageFolderPath = nodesStorageFolderPath;
+        this.allConversationNodes = new ConcurrentHashMap<>();
+        this.allConversationNodesID = new HashSet<>();
+        this.linkedConversationNodesID = new HashSet<>();
     }
 
 
@@ -41,12 +43,25 @@ public class SessionNode extends PersistentNode {
         }
         return ifAllDeleteOperationExecuteSucceed;
     }
+    @Override @JsonIgnore
+    protected boolean cascadeLoad(){
+        for (String ConversationNodeID : allConversationNodesID) {
+            ConversationNode conversationNode = ConversationNode.loadFromFile(NodesStorageFolderPath + ConversationNodeID + ".json", ConversationNode.class);
+            if(conversationNode == null) {
+                return false;
+            }
+            allConversationNodes.put(ConversationNodeID, conversationNode);
+        }
+        return true;
+    }
     @Setter @JsonProperty("SessionName")
     private String SessionName;
     @Setter @JsonProperty("NodesStorageFolderPath")
     private String NodesStorageFolderPath;
-    @JsonProperty("AllConversationNodes")
+    @JsonIgnore
     private final ConcurrentHashMap<String, ConversationNode> allConversationNodes;
+    @JsonProperty("AllConversationNodesID")
+    private final HashSet<String> allConversationNodesID;
     @JsonProperty("LinkedConversationNodesID")
     private final HashSet<String> linkedConversationNodesID;
 }

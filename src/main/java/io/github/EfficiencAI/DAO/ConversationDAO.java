@@ -530,7 +530,7 @@ public class ConversationDAO {
         if(parentId.equals("-1")){
             boolean hasFoundAvailableID = false;
             for(IDElementComposition idElementComposition : IDElementComposition.values()){
-                if(!sessionNode.getAllConversationNodes().containsKey(idElementComposition.toString())){
+                if(!sessionNode.getAllConversationNodesID().contains(idElementComposition.toString())){
                     hasFoundAvailableID = true;
                     newConversationNodeID = idElementComposition.toString();
                     break;
@@ -546,7 +546,7 @@ public class ConversationDAO {
             }
         }
         else{
-            if(!sessionNode.getAllConversationNodes().containsKey(parentId)){
+            if(!sessionNode.getAllConversationNodesID().contains(parentId)){
                 return new NodeOperationResult<>(
                         NodeOperationResult.OperationType.CREATE,
                         null,
@@ -565,7 +565,7 @@ public class ConversationDAO {
             }
             boolean hasFoundAvailableID = false;
             for(IDElementComposition idElementComposition : IDElementComposition.values()){
-                if(!sessionNode.getAllConversationNodes().containsKey(parentId + idElementComposition)){
+                if(!sessionNode.getAllConversationNodesID().contains(parentId + idElementComposition)){
                     hasFoundAvailableID = true;
                     newConversationNodeID = parentId + idElementComposition;
                     break;
@@ -627,6 +627,14 @@ public class ConversationDAO {
         }
 
         //更新会话节点
+        if (!sessionNode.getAllConversationNodesID().add(newConversationNodeID)){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.CREATE,
+                    null,
+                    false,
+                    "对话节点索引更新失败"
+            );
+        }
         sessionNode.getAllConversationNodes().put(newConversationNodeID, newConversationNode);
         //更新父节点
         if(parentId.equals("-1")){
@@ -700,7 +708,7 @@ public class ConversationDAO {
                     "对话ID传输出错"
             );
         }
-        if (!sessionNode.getAllConversationNodes().containsKey(conversationNodeID)) {
+        if (!sessionNode.getAllConversationNodesID().contains(conversationNodeID)) {
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.MODIFY,
                     null,
@@ -809,7 +817,7 @@ public class ConversationDAO {
                     "对话ID传输出错"
             );
         }
-        if (!sessionNode.getAllConversationNodes().containsKey(conversationNodeID)) {
+        if (!sessionNode.getAllConversationNodesID().contains(conversationNodeID)) {
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.GET,
                     null,
@@ -890,7 +898,12 @@ public class ConversationDAO {
             if(!childConversationNode.deleteSelfFromFile(sessionNode.getNodesStorageFolderPath())){
                 ifAllDeleteOperationExecuteSucceed = false;
             }
-            sessionNode.getAllConversationNodes().remove(childConversationNodeID);
+            if(sessionNode.getAllConversationNodesID().remove(childConversationNodeID)){
+                sessionNode.getAllConversationNodes().remove(childConversationNodeID);
+            }else{
+                ifAllDeleteOperationExecuteSucceed = false;
+            }
+
         }
 
         //持久化删除对话节点
@@ -899,6 +912,14 @@ public class ConversationDAO {
         }
 
         //更新会话节点
+        if(!sessionNode.getAllConversationNodesID().remove(conversationNodeID)){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.DELETE,
+                    null,
+                    false,
+                    "删除对话节点时，索引更新失败"
+            );
+        }
         sessionNode.getAllConversationNodes().remove(conversationNodeID);
         //更新父节点
         if(conversationNodeID.length() == 1){

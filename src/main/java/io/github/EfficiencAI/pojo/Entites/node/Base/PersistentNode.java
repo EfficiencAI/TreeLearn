@@ -50,6 +50,8 @@ public abstract class PersistentNode {
         }
     }
 
+    protected abstract boolean cascadeLoad();
+
     /**
      * 从指定路径的文件中反序列化 JSON 数据并创建节点实例。
      * @param storageFilePath 存储节点 JSON 文件的完整路径
@@ -66,11 +68,19 @@ public abstract class PersistentNode {
 
         // 读取文件
         try {
-            return mapper.readValue(file, clazz);
+            T node = mapper.readValue(file, clazz);
+            if (node != null) {
+                if(!node.cascadeLoad()){
+                    return null;
+                }
+            }
+            return node;
         } catch (IOException e) {
             log.error(e.getMessage(),e);
             return null;
         }
+
+
     }
 
     protected abstract boolean cascadeDelete();

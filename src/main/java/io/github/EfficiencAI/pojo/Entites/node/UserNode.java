@@ -49,4 +49,9 @@ public class UserNode extends PersistentNode {
         return ifAllDeleteOperationExecuteSucceed;
     }
 
+    @Override @JsonIgnore
+    protected boolean cascadeLoad() {
+        return true;
+    }
+
 }

@@ -34,6 +34,10 @@ public class ConversationNode extends PersistentNode {
          */
         return true;
     }
+    @Override @JsonIgnore
+    protected boolean cascadeLoad(){
+        return true;
+    }
     @Setter @JsonProperty("ConversationNodeID")
     private String ConversationNodeID;
     @Setter @JsonProperty("ContextStartIdx")
@@ -45,6 +49,6 @@ public class ConversationNode extends PersistentNode {
     @Setter @JsonProperty("AIMessage")
     private String AIMessage;
     @JsonProperty("LinkedConversationNodesID")
-    private HashSet<String> linkedConversationNodesID = null;
+    private HashSet<String> linkedConversationNodesID;
 
 }
