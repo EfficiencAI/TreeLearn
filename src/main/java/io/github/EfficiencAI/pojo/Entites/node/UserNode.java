@@ -11,8 +11,14 @@ import java.util.HashSet;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class UserNode extends PersistentNode {
-    UserNode() {
+    public UserNode() {
         SessionNames = new HashSet<>();
+    }
+    public UserNode(String UserId, String UserName, String SessionsStorageFolderPath) {
+        this.UserId = UserId;
+        this.UserName = UserName;
+        this.SessionsStorageFolderPath = SessionsStorageFolderPath;
+        this.SessionNames = new HashSet<>();
     }
     @JsonProperty("UserId")
     private String UserId;
