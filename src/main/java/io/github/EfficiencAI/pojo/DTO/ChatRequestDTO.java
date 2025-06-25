@@ -11,4 +11,5 @@ public class ChatRequestDTO {
     private String modelName;
     private String baseurl;
     private String message;
+    private String[] mcpUrls;
 }

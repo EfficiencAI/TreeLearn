@@ -9,6 +9,7 @@ public class ChatRequestVO {
     private String apikey;
     private String baseurl;
     private String modelName;
+    private String[] mcpUrls;
     private String userId;
     private String sessionName; // 新增会话名称
     private String systemPrompt;
@@ -16,6 +17,7 @@ public class ChatRequestVO {
     public ChatRequestDTO toDTO() {
         return ChatRequestDTO
                 .builder()
+                .mcpUrls(mcpUrls)
                 .apikey(apikey)
                 .baseurl(baseurl)
                 .modelName(modelName)
