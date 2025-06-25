@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashSet;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
@@ -51,6 +53,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<NodeOperationResult<SessionNode>> getSession(String userId, String sessionName) {
         return Mono.fromCallable(() -> conversationDAO.getSession(userId, sessionName));
+    }
+
+    @Override
+    public Mono<NodeOperationResult<HashSet<String>>> getAllSessionsName(String userId){
+        return Mono.fromCallable(() -> conversationDAO.getAllSessionsName(userId));
     }
 
     @Override
@@ -131,5 +138,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<NodeOperationResult<ConversationNode>> getConversationNode(String userId, String sessionName, String conversationNodeId) {
         return Mono.fromCallable(() -> conversationDAO.getConversationNode(userId, sessionName, conversationNodeId));
+    }
+    @Override
+    public Mono<NodeOperationResult<HashSet<String>>> getAllConversationNodesID(String userId, String sessionName) {
+        return Mono.fromCallable(() -> conversationDAO.getAllConversationNodesID(userId, sessionName));
     }
 }

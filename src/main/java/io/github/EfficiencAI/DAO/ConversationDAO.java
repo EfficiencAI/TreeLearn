@@ -1,6 +1,5 @@
 package io.github.EfficiencAI.DAO;
 
-import io.github.EfficiencAI.pojo.Entites.node.Base.PersistentNode;
 import io.github.EfficiencAI.pojo.Entites.node.ConversationNode;
 import io.github.EfficiencAI.pojo.Entites.node.SessionNode;
 import io.github.EfficiencAI.pojo.Entites.node.UserNode;
@@ -10,6 +9,7 @@ import io.github.EfficiencAI.utils.IDElementComposition;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.HashSet;
 
 @Component
 public class ConversationDAO {
@@ -69,7 +69,7 @@ public class ConversationDAO {
         nodesCache.sessionNode = sessionNode;
         return sessionNode;
     }
-    private <T extends PersistentNode> NodeOperationResult<T> figureOutGetUserNodeFailureReason(String userID) {
+    private <T> NodeOperationResult<T> figureOutGetUserNodeFailureReason(String userID) {
         if(userID == null) {
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.MODIFY,
@@ -85,7 +85,7 @@ public class ConversationDAO {
                 "用户信息获取失败，用户可能不存在"
         );
     }
-    private <T extends PersistentNode> NodeOperationResult<T> figureOutGetSessionNodeFailureReason(String userID, String sessionName) {
+    private <T> NodeOperationResult<T> figureOutGetSessionNodeFailureReason(String userID, String sessionName) {
         if(userID == null){
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.GET,
@@ -402,6 +402,26 @@ public class ConversationDAO {
                 true,
                 "会话信息获取成功"
         );
+    }
+
+    /**
+     * 获取所有会话名称（唯一标识符）
+     * @param userID 用户ID（唯一标识符）
+     * @return 会话操作结果
+     */
+    public NodeOperationResult<HashSet<String>> getAllSessionsName(String userID) {
+        // 获取用户节点
+        UserNode userNode;
+        if((userNode = getUserNodeSafetyWithCache(userID)) == null){
+            return figureOutGetUserNodeFailureReason(userID);
+        }
+        return new NodeOperationResult<>(
+                NodeOperationResult.OperationType.GET,
+                new HashSet<>(userNode.getSessionNames()),
+                true,
+                "会话名称获取成功"
+        );
+
     }
 
     /**
@@ -792,6 +812,27 @@ public class ConversationDAO {
                 conversationNode,
                 true,
                 "对话节点更新成功"
+        );
+    }
+
+    /**
+     * 获取所有对话节点ID
+     * @param userID 用户ID（唯一标识符）
+     * @param sessionName 会话名称（唯一标识符）
+     * @return 对话操作结果
+     */
+    public NodeOperationResult<HashSet<String>> getAllConversationNodesID(String userID, String sessionName) {
+        //获取会话节点
+        SessionNode sessionNode;
+        if ((sessionNode = getSessionNodeSafetyWithCache(userID, sessionName)) == null) {
+            return figureOutGetSessionNodeFailureReason(userID, sessionName);
+        }
+        //返回对话信息
+        return new NodeOperationResult<>(
+                NodeOperationResult.OperationType.GET,
+                new HashSet<>(sessionNode.getAllConversationNodesID()),
+                true,
+                "对话节点ID获取成功"
         );
     }
 

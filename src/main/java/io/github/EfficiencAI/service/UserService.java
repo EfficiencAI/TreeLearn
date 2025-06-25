@@ -9,6 +9,8 @@ import io.github.EfficiencAI.pojo.VO.NodeOperationResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashSet;
+
 public interface UserService {
     // 用户管理
     Mono<NodeOperationResult<UserNode>> createUser(String userId, String userName);
@@ -19,6 +21,7 @@ public interface UserService {
     // 会话管理
     Mono<NodeOperationResult<SessionNode>> createSession(String userId, String sessionName);
     Mono<NodeOperationResult<SessionNode>> getSession(String userId, String sessionName);
+    Mono<NodeOperationResult<HashSet<String>>> getAllSessionsName(String userId);
     Mono<NodeOperationResult<SessionNode>> updateSession(String userId, String sessionName, String newSessionName);
     Mono<NodeOperationResult<SessionNode>> deleteSession(String userId, String sessionName);
     
@@ -27,4 +30,5 @@ public interface UserService {
     Flux<String> updateConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO);
     Mono<NodeOperationResult<ConversationNode>> deleteConversationNode(String userId, String sessionName, String conversationNodeId);
     Mono<NodeOperationResult<ConversationNode>> getConversationNode(String userId, String sessionName, String conversationNodeId);
+    Mono<NodeOperationResult<HashSet<String>>> getAllConversationNodesID(String userId, String sessionName);
 }

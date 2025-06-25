@@ -21,7 +21,7 @@ public class UserController {
         return userService.createUser(userId, userName)
                 .map(result ->
                         result.ifSuccess ?
-                                Result.success(result.node) :
+                                Result.success(result.returnValue) :
                                 Result.error(result.note));
     }
     
@@ -30,7 +30,7 @@ public class UserController {
         return userService.getUser(userId)
                 .map(result ->
                         result.ifSuccess ?
-                                Result.success(result.node) :
+                                Result.success(result.returnValue) :
                                 Result.error(result.note));
     }
     
@@ -39,7 +39,7 @@ public class UserController {
         return userService.updateUser(userId, newUserName)
                 .map(result ->
                         result.ifSuccess ?
-                                Result.success(result.node) :
+                                Result.success(result.returnValue) :
                                 Result.error(result.note));
     }
     
@@ -58,7 +58,7 @@ public class UserController {
         return userService.createSession(userId, sessionName)
                 .map(result ->
                         result.ifSuccess ?
-                                Result.success(result.node) :
+                                Result.success(result.returnValue) :
                                 Result.error(result.note));
     }
     
@@ -67,10 +67,19 @@ public class UserController {
         return userService.getSession(userId, sessionName)
                 .map(result ->
                         result.ifSuccess ?
-                                Result.success(result.node) :
+                                Result.success(result.returnValue) :
                                 Result.error(result.note));
     }
-    
+
+    @GetMapping("/session/getAllSessionsName")
+    public Mono<Result> getAllSessionsName(@RequestParam String userId) {
+        return userService.getAllSessionsName(userId)
+               .map(result ->
+                        result.ifSuccess?
+                                Result.success(result.returnValue) :
+                                Result.error(result.note));
+    }
+
     @PutMapping("/session/update")
     public Mono<Result> updateSession(@RequestParam String userId, 
                                     @RequestParam String sessionName, 
@@ -78,7 +87,7 @@ public class UserController {
         return userService.updateSession(userId, sessionName, newSessionName)
                 .map(result ->
                         result.ifSuccess ?
-                                Result.success(result.node) :
+                                Result.success(result.returnValue) :
                                 Result.error(result.note));
     }
     
@@ -126,7 +135,18 @@ public class UserController {
         return userService.getConversationNode(userId, sessionName, conversationNodeId)
                 .map(result ->
                         result.ifSuccess ?
-                                Result.success(result.node) :
+                                Result.success(result.returnValue) :
                                 Result.error(result.note));
     }
+
+    @GetMapping("/conversation/getAllConversationNodesId")
+    public Mono<Result> getAllConversationNodesId(@RequestParam String userId,
+                                                 @RequestParam String sessionName) {
+        return userService.getAllConversationNodesID(userId, sessionName)
+              .map(result ->
+                        result.ifSuccess?
+                                Result.success(result.returnValue) :
+                                Result.error(result.note));
+    }
+
 }
