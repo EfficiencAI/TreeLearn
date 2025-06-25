@@ -6,6 +6,98 @@
 - **Content-Type**: `application/json`
 - **响应格式**: JSON
 
+## 用户管理接口
+
+### 1. 创建用户
+
+**接口地址**: `POST /user/create`
+
+**请求参数**:
+- `userId` (String, 必填): 用户ID
+- `userName` (String, 必填): 用户名称
+
+**响应格式**:
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "obj": {}
+}
+```
+
+**示例请求**:
+```bash
+POST /user/create?userId=user123&userName=张三
+```
+
+### 2. 获取用户
+
+**接口地址**: `GET /user/get`
+
+**请求参数**:
+- `userId` (String, 必填): 用户ID
+
+**响应格式**:
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "obj": {
+    
+  }
+}
+```
+
+**示例请求**:
+```bash
+GET /user/get?userId=user123
+```
+
+### 3. 更新用户
+
+**接口地址**: `PUT /user/update`
+
+**请求参数**:
+- `userId` (String, 必填): 用户ID
+- `newUserName` (String, 必填): 新用户名称
+
+**响应格式**:
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "obj": {
+    
+  }
+}
+```
+
+**示例请求**:
+```bash
+PUT /user/update?userId=user123&newUserName=李四
+```
+
+### 4. 删除用户
+
+**接口地址**: `DELETE /user/delete`
+
+**请求参数**:
+- `userId` (String, 必填): 用户ID
+
+**响应格式**:
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "obj": "用户删除成功"
+}
+```
+
+**示例请求**:
+```bash
+DELETE /user/delete?userId=user123
+```
+
 ## 会话管理接口
 
 ### 1. 创建会话
@@ -51,7 +143,36 @@ POST /user/session/create?userId=user123&sessionName=我的对话
 }
 ```
 
-### 3. 更新会话
+**示例请求**:
+```bash
+GET /user/session/get?userId=user123&sessionName=我的对话
+```
+
+### 3. 获取所有会话名称
+
+**接口地址**: `GET /user/session/getAllSessionsName`
+
+**请求参数**:
+- `userId` (String, 必填): 用户ID
+
+**响应格式**:
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "obj": [
+    "会话名称1",
+    "会话名称2"
+  ]
+}
+```
+
+**示例请求**:
+```bash
+GET /user/session/getAllSessionsName?userId=user123
+```
+
+### 4. 更新会话
 
 **接口地址**: `PUT /user/session/update`
 
@@ -71,7 +192,12 @@ POST /user/session/create?userId=user123&sessionName=我的对话
 }
 ```
 
-### 4. 删除会话
+**示例请求**:
+```bash
+PUT /user/session/update?userId=user123&sessionName=我的对话&newSessionName=新对话
+```
+
+### 5. 删除会话
 
 **接口地址**: `DELETE /user/session/delete`
 
@@ -88,6 +214,11 @@ POST /user/session/create?userId=user123&sessionName=我的对话
 }
 ```
 
+**示例请求**:
+```bash
+DELETE /user/session/delete?userId=user123&sessionName=我的对话
+```
+
 ## 对话节点管理接口
 
 ### 1. 添加对话节点
@@ -95,8 +226,6 @@ POST /user/session/create?userId=user123&sessionName=我的对话
 **接口地址**: `POST /user/conversation/add`
 
 **请求参数**:
-- `userId` (String, 必填): 用户ID
-- `sessionName` (String, 必填): 会话名称
 - **请求体** (JSON):
 
 ```json
@@ -113,7 +242,7 @@ POST /user/session/create?userId=user123&sessionName=我的对话
 
 **示例请求**:
 ```bash
-POST /user/conversation/add?userId=user123&sessionName=我的对话
+POST /user/conversation/add
 Content-Type: application/json
 
 {
@@ -126,14 +255,9 @@ Content-Type: application/json
 
 ### 2. 更新对话节点
 
-**接口地址**: `PUT /user/conversation/update/{conversationNodeId}`
-
-**路径参数**:
-- `conversationNodeId` (String, 必填): 对话节点ID
+**接口地址**: `PUT /user/conversation/update`
 
 **请求参数**:
-- `userId` (String, 必填): 用户ID
-- `sessionName` (String, 必填): 会话名称
 - **请求体** (JSON):
 
 ```json
@@ -150,7 +274,7 @@ Content-Type: application/json
 
 **示例请求**:
 ```bash
-PUT /user/conversation/update/node_123?userId=user123&sessionName=我的对话
+PUT /user/conversation/update
 Content-Type: application/json
 
 {
@@ -181,9 +305,66 @@ Content-Type: application/json
 }
 ```
 
+**示例请求**:
+```bash
+DELETE /user/conversation/delete/node_123?userId=user123&sessionName=我的对话
+```
+
+### 4. 获取对话节点
+
+**接口地址**: `GET /user/conversation/get/{conversationNodeId}`
+
+**路径参数**:
+- `conversationNodeId` (String, 必填): 对话节点ID
+
+**请求参数**:
+- `userId` (String, 必填): 用户ID
+- `sessionName` (String, 必填): 会话名称
+
+**响应格式**:
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "obj": {
+    
+  }
+}
+```
+
+**示例请求**:
+```bash
+GET /user/conversation/get/node_123?userId=user123&sessionName=我的对话
+```
+
+### 5. 获取所有对话节点ID
+
+**接口地址**: `GET /user/conversation/getAllConversationNodesId`
+
+**请求参数**:
+- `userId` (String, 必填): 用户ID
+- `sessionName` (String, 必填): 会话名称
+
+**响应格式**:
+```json
+{
+  "code": 200,
+  "msg": "success",
+  "obj": [
+    "node_001",
+    "node_002"
+  ]
+}
+```
+
+**示例请求**:
+```bash
+GET /user/conversation/getAllConversationNodesId?userId=user123&sessionName=我的对话
+```
+
 ## 数据模型
 
-### NodeRequestVO
+### ConversationRequestVO
 
 ```json
 {
@@ -228,4 +409,14 @@ Content-Type: application/json
 2. **参数验证**: 所有必填参数都需要提供，否则可能返回错误
 3. **会话管理**: 在操作对话节点前，需要确保对应的会话已存在
 4. **编码格式**: 所有请求和响应都使用 UTF-8 编码
+5. **用户管理**: 在创建会话前，需要确保用户已存在
+```
+
+主要更新内容：
+1. **新增用户管理接口**：创建用户、获取用户、更新用户、删除用户
+2. **新增会话管理接口**：获取所有会话名称
+3. **新增对话节点管理接口**：获取对话节点、获取所有对话节点ID
+4. **修正现有接口**：更新对话节点接口的路径参数描述
+5. **完善数据模型**：将NodeRequestVO更名为ConversationRequestVO以匹配代码
+6. **增加注意事项**：关于用户管理的说明
         
