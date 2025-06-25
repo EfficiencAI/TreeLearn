@@ -230,10 +230,19 @@ DELETE /user/session/delete?userId=user123&sessionName=我的对话
 
 ```json
 {
+  "userId": "string",
+  "sessionName": "string",
+  "conversationNodeId": "string",
   "parentId": "string",
   "userMessage": "string",
   "contextStartIdx": "string",
-  "contextEndIdx": "string"
+  "contextEndIdx": "string",
+  "message": "string",
+  "apikey": "string",
+  "baseurl": "string",
+  "modelName": "string",
+  "systemPrompt": "string",
+  "mcpUrls": ["string"]
 }
 ```
 
@@ -246,10 +255,19 @@ POST /user/conversation/add
 Content-Type: application/json
 
 {
+  "userId": "user123",
+  "sessionName": "我的对话",
+  "conversationNodeId": "node_123",
   "parentId": "node_001",
   "userMessage": "你好，请介绍一下人工智能",
   "contextStartIdx": "0",
-  "contextEndIdx": "10"
+  "contextEndIdx": "10",
+  "message": "你好，请介绍一下人工智能",
+  "apikey": "your-api-key",
+  "baseurl": "https://api.openai.com/v1",
+  "modelName": "gpt-3.5-turbo",
+  "systemPrompt": "你是一个有用的AI助手",
+  "mcpUrls": ["https://example.com/mcp1", "https://example.com/mcp2"]
 }
 ```
 
@@ -262,10 +280,19 @@ Content-Type: application/json
 
 ```json
 {
+  "userId": "string",
+  "sessionName": "string",
+  "conversationNodeId": "string",
   "parentId": "string",
   "userMessage": "string",
   "contextStartIdx": "string",
-  "contextEndIdx": "string"
+  "contextEndIdx": "string",
+  "message": "string",
+  "apikey": "string",
+  "baseurl": "string",
+  "modelName": "string",
+  "systemPrompt": "string",
+  "mcpUrls": ["string"]
 }
 ```
 
@@ -278,10 +305,19 @@ PUT /user/conversation/update
 Content-Type: application/json
 
 {
+  "userId": "user123",
+  "sessionName": "我的对话",
+  "conversationNodeId": "node_123",
   "parentId": "node_001",
   "userMessage": "请详细介绍一下机器学习",
   "contextStartIdx": "0",
-  "contextEndIdx": "15"
+  "contextEndIdx": "15",
+  "message": "请详细介绍一下机器学习",
+  "apikey": "your-api-key",
+  "baseurl": "https://api.openai.com/v1",
+  "modelName": "gpt-4",
+  "systemPrompt": "你是一个专业的AI技术专家",
+  "mcpUrls": ["https://example.com/mcp1"]
 }
 ```
 

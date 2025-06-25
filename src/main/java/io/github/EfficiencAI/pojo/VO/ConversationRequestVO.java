@@ -19,6 +19,7 @@ public class ConversationRequestVO {
     private String baseurl;
     private String modelName;
     private String systemPrompt;
+    private String[] mcpUrls;
     
     public NodeRequestDTO toNodeRequestDTO() {
         return NodeRequestDTO
@@ -41,6 +42,7 @@ public class ConversationRequestVO {
                 .modelName(modelName)
                 .message(message)
                 .systemPrompt(systemPrompt)
+                .mcpUrls(mcpUrls)
                 .build();
     }
 }
