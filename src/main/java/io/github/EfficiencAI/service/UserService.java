@@ -2,6 +2,7 @@ package io.github.EfficiencAI.service;
 
 import io.github.EfficiencAI.pojo.DTO.ChatRequestDTO;
 import io.github.EfficiencAI.pojo.DTO.NodeRequestDTO;
+import io.github.EfficiencAI.pojo.DTO.UserDTO;
 import io.github.EfficiencAI.pojo.Entites.node.ConversationNode;
 import io.github.EfficiencAI.pojo.Entites.node.SessionNode;
 import io.github.EfficiencAI.pojo.Entites.node.UserNode;
@@ -13,9 +14,9 @@ import java.util.HashSet;
 
 public interface UserService {
     // 用户管理
-    Mono<NodeOperationResult<UserNode>> createUser(String userId, String userName);
+    Mono<NodeOperationResult<UserNode>> createUser(UserDTO userDTO);
     Mono<NodeOperationResult<UserNode>> getUser(String userId);
-    Mono<NodeOperationResult<UserNode>> updateUser(String userId, String newUserName);
+    Mono<NodeOperationResult<UserNode>> updateUser(UserDTO userDTO);
     Mono<NodeOperationResult<UserNode>> deleteUser(String userId);
     
     // 会话管理

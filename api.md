@@ -13,8 +13,14 @@
 **接口地址**: `POST /user/create`
 
 **请求参数**:
-- `userId` (String, 必填): 用户ID
-- `userName` (String, 必填): 用户名称
+- **请求体** (JSON):
+
+```json
+{
+  "userId": "string",
+  "username": "string"
+}
+```
 
 **响应格式**:
 ```json
@@ -27,7 +33,13 @@
 
 **示例请求**:
 ```bash
-POST /user/create?userId=user123&userName=张三
+POST /user/create
+Content-Type: application/json
+
+{
+  "userId": "user123",
+  "username": "张三"
+}
 ```
 
 ### 2. 获取用户
@@ -58,8 +70,14 @@ GET /user/get?userId=user123
 **接口地址**: `PUT /user/update`
 
 **请求参数**:
-- `userId` (String, 必填): 用户ID
-- `newUserName` (String, 必填): 新用户名称
+- **请求体** (JSON):
+
+```json
+{
+  "userId": "string",
+  "username": "string"
+}
+```
 
 **响应格式**:
 ```json
@@ -74,7 +92,13 @@ GET /user/get?userId=user123
 
 **示例请求**:
 ```bash
-PUT /user/update?userId=user123&newUserName=李四
+PUT /user/update
+Content-Type: application/json
+
+{
+  "userId": "user123",
+  "username": "李四"
+}
 ```
 
 ### 4. 删除用户
@@ -400,14 +424,32 @@ GET /user/conversation/getAllConversationNodesId?userId=user123&sessionName=我�
 
 ## 数据模型
 
+### UserVO
+
+```json
+{
+  "userId": "string",
+  "username": "string"
+}
+```
+
 ### ConversationRequestVO
 
 ```json
 {
-  "parentId": "string",       
-  "userMessage": "string",     
-  "contextStartIdx": "string", 
-  "contextEndIdx": "string"    
+  "userId": "string",
+  "sessionName": "string",
+  "conversationNodeId": "string",
+  "parentId": "string",
+  "userMessage": "string",
+  "contextStartIdx": "string",
+  "contextEndIdx": "string",
+  "message": "string",
+  "apikey": "string",
+  "baseurl": "string",
+  "modelName": "string",
+  "systemPrompt": "string",
+  "mcpUrls": ["string"]
 }
 ```
 
@@ -415,9 +457,9 @@ GET /user/conversation/getAllConversationNodesId?userId=user123&sessionName=我�
 
 ```json
 {
-  "code": 200,           
-  "msg": "success",    
-  "obj": {}            
+  "code": 200,
+  "msg": "success",
+  "obj": {}
 }
 ```
 
@@ -446,13 +488,5 @@ GET /user/conversation/getAllConversationNodesId?userId=user123&sessionName=我�
 3. **会话管理**: 在操作对话节点前，需要确保对应的会话已存在
 4. **编码格式**: 所有请求和响应都使用 UTF-8 编码
 5. **用户管理**: 在创建会话前，需要确保用户已存在
-```
-
-主要更新内容：
-1. **新增用户管理接口**：创建用户、获取用户、更新用户、删除用户
-2. **新增会话管理接口**：获取所有会话名称
-3. **新增对话节点管理接口**：获取对话节点、获取所有对话节点ID
-4. **修正现有接口**：更新对话节点接口的路径参数描述
-5. **完善数据模型**：将NodeRequestVO更名为ConversationRequestVO以匹配代码
-6. **增加注意事项**：关于用户管理的说明
+6. **请求体格式**: 用户管理的创建和更新接口现在使用JSON请求体而不是查询参数
         

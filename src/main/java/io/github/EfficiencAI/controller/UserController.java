@@ -2,6 +2,7 @@ package io.github.EfficiencAI.controller;
 
 import io.github.EfficiencAI.pojo.VO.ConversationRequestVO;
 import io.github.EfficiencAI.pojo.VO.Result;
+import io.github.EfficiencAI.pojo.VO.UserVO;
 import io.github.EfficiencAI.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ public class UserController {
     
     // 用户管理接口
     @PostMapping("/create")
-    public Mono<Result> createUser(@RequestParam String userId, @RequestParam String userName) {
-        return userService.createUser(userId, userName)
+    public Mono<Result> createUser(@RequestBody UserVO userVO) {
+        return userService.createUser(userVO.toDTO())
                 .map(result ->
                         result.ifSuccess ?
                                 Result.success(result.returnValue) :
@@ -35,8 +36,8 @@ public class UserController {
     }
     
     @PutMapping("/update")
-    public Mono<Result> updateUser(@RequestParam String userId, @RequestParam String newUserName) {
-        return userService.updateUser(userId, newUserName)
+    public Mono<Result> updateUser(@RequestBody UserVO userVO) {
+        return userService.updateUser(userVO.toDTO())
                 .map(result ->
                         result.ifSuccess ?
                                 Result.success(result.returnValue) :
@@ -103,6 +104,7 @@ public class UserController {
     // 对话节点管理接口
     @PostMapping("/conversation/add")
     public Flux<String> addConversationNode(@RequestBody ConversationRequestVO conversationRequestVO) {
+        System.out.println(conversationRequestVO);
         return userService.addConversationNode(
             conversationRequestVO.toNodeRequestDTO(),
             conversationRequestVO.toChatRequestDTO()

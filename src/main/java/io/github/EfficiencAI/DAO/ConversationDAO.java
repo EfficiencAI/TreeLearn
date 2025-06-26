@@ -4,6 +4,7 @@ import io.github.EfficiencAI.pojo.Entites.node.ConversationNode;
 import io.github.EfficiencAI.pojo.Entites.node.SessionNode;
 import io.github.EfficiencAI.pojo.Entites.node.UserNode;
 import io.github.EfficiencAI.pojo.VO.NodeOperationResult;
+import io.github.EfficiencAI.pojo.DTO.UserDTO;
 import io.github.EfficiencAI.utils.Cache.ConversationDAOCache;
 import io.github.EfficiencAI.utils.IDElementComposition;
 import org.springframework.stereotype.Component;
@@ -129,11 +130,22 @@ public class ConversationDAO {
 
     /**
      * 添加新的用户
-     * @param userID 用户ID（唯一标识符）
-     * @param userName 用户名称（唯一标识符）
+     * @param userDTO 用户数据传输对象
      * @return 用户操作结果
      */
-    public NodeOperationResult<UserNode> newUser(String userID, String userName){
+    public NodeOperationResult<UserNode> newUser(UserDTO userDTO){
+        if (userDTO == null){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.CREATE,
+                    null,
+                    false,
+                    "用户信息传输出错"
+            );
+        }
+        
+        String userID = userDTO.getUserId();
+        String userName = userDTO.getUsername();
+        
         if (userID == null){
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.CREATE,
@@ -219,11 +231,22 @@ public class ConversationDAO {
 
     /**
      * 修改用户信息
-     * @param userID 用户ID（唯一标识符）
-     * @param newUserName 新的用户名称（唯一标识符）
+     * @param userDTO 用户数据传输对象
      * @return 用户操作结果
      */
-    public NodeOperationResult<UserNode> modifyUser(String userID, String newUserName){
+    public NodeOperationResult<UserNode> modifyUser(UserDTO userDTO){
+        if (userDTO == null){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.MODIFY,
+                    null,
+                    false,
+                    "用户信息传输出错"
+            );
+        }
+        
+        String userID = userDTO.getUserId();
+        String newUserName = userDTO.getUsername();
+        
         //获取用户节点
         UserNode userNode;
         if((userNode = getUserNodeSafetyWithCache(userID)) == null){

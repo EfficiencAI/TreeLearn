@@ -20,6 +20,13 @@ public class AiServiceImpl implements AiService {
                 .doOnComplete(System.out::println)
                 .doOnError(error -> {
                     System.err.println("\n流式输出出错: " + error.getMessage());
+                })
+                // 添加超时处理，不要返回默认消息
+                .onErrorResume(throwable -> {
+                    if (throwable.getMessage().contains("timed out")) {
+                        return Flux.error(new RuntimeException("AI服务连接超时，请稍后重试"));
+                    }
+                    return Flux.error(throwable);
                 });
     }
 

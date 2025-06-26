@@ -3,6 +3,7 @@ package io.github.EfficiencAI.service.impl;
 import io.github.EfficiencAI.DAO.ConversationDAO;
 import io.github.EfficiencAI.pojo.DTO.ChatRequestDTO;
 import io.github.EfficiencAI.pojo.DTO.NodeRequestDTO;
+import io.github.EfficiencAI.pojo.DTO.UserDTO;
 import io.github.EfficiencAI.pojo.Entites.node.ConversationNode;
 import io.github.EfficiencAI.pojo.Entites.node.SessionNode;
 import io.github.EfficiencAI.pojo.Entites.node.UserNode;
@@ -13,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,8 +29,8 @@ public class UserServiceImpl implements UserService {
 
     // 用户管理实现
     @Override
-    public Mono<NodeOperationResult<UserNode>> createUser(String userId, String userName) {
-        return Mono.fromCallable(() -> conversationDAO.newUser(userId, userName));
+    public Mono<NodeOperationResult<UserNode>> createUser(UserDTO userDTO) {
+        return Mono.fromCallable(() -> conversationDAO.newUser(userDTO));
     }
 
     @Override
@@ -36,8 +39,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<NodeOperationResult<UserNode>> updateUser(String userId, String newUserName) {
-        return Mono.fromCallable(() -> conversationDAO.modifyUser(userId, newUserName));
+    public Mono<NodeOperationResult<UserNode>> updateUser(UserDTO userDTO) {
+        return Mono.fromCallable(() -> conversationDAO.modifyUser(userDTO));
     }
 
     @Override
@@ -72,62 +75,72 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Flux<String> addConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO) {
+        // 使用AtomicReference来收集完整响应，保持原始格式
+        AtomicReference<StringBuilder> responseBuilder = new AtomicReference<>(new StringBuilder());
+        
         return aiService.chat(chatRequestDTO)
-                .publish(sharedFlux -> {
-                    // 保存操作
-                    Mono<Void> saveOperation = sharedFlux
-                            .collectList()
-                            .map(list -> String.join("", list))
-                            .flatMap(completeResponse -> {
-                                NodeOperationResult<ConversationNode> result = conversationDAO.newConversationNode(
-                                        nodeRequestDTO.getUserId(),
-                                        nodeRequestDTO.getSessionName(),
-                                        nodeRequestDTO.getParentId(),
-                                        nodeRequestDTO.getContextStartIdx(),
-                                        nodeRequestDTO.getContextEndIdx(),
-                                        nodeRequestDTO.getUserMessage(),
-                                        completeResponse
-                                );
-                                if (!result.ifSuccess) {
-                                    return Mono.error(new RuntimeException("保存对话节点失败: " + result.note));
-                                }
-                                return Mono.empty();
-                            })
-                            .then();
-                    
-                    // 返回流式数据，同时确保保存操作执行
-                    return sharedFlux.mergeWith(saveOperation.then(Mono.empty()));
-                });
+                .doOnNext(token -> {
+                    // 直接追加token，保持原始格式包括换行符
+                    responseBuilder.get().append(token);
+                })
+                .doOnComplete(() -> {
+                    // 流完成后异步保存，保持完整的原始响应格式
+                    String completeResponse = responseBuilder.get().toString();
+                    Mono.fromRunnable(() -> {
+                        NodeOperationResult<ConversationNode> result = conversationDAO.newConversationNode(
+                                nodeRequestDTO.getUserId(),
+                                nodeRequestDTO.getSessionName(),
+                                nodeRequestDTO.getParentId(),
+                                nodeRequestDTO.getContextStartIdx(),
+                                nodeRequestDTO.getContextEndIdx(),
+                                nodeRequestDTO.getUserMessage(),
+                                completeResponse // 保持原始格式，包括\n换行符
+                        );
+                        if (!result.ifSuccess) {
+                            System.err.println("保存对话节点失败: " + result.note);
+                        }
+                    })
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .doOnError(error -> System.err.println("保存对话节点时出错: " + error.getMessage()))
+                    .onErrorResume(error -> Mono.empty())
+                    .subscribe();
+                })
+                .doOnError(error -> System.err.println("处理对话时出错: " + error.getMessage()));
     }
 
     @Override
     public Flux<String> updateConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO) {
+        // 使用AtomicReference来收集完整响应，保持原始格式
+        AtomicReference<StringBuilder> responseBuilder = new AtomicReference<>(new StringBuilder());
+        
         return aiService.chat(chatRequestDTO)
-                .publish(sharedFlux -> {
-                    // 保存操作
-                    Mono<Void> saveOperation = sharedFlux
-                            .collectList()
-                            .map(list -> String.join("", list))
-                            .flatMap(completeResponse -> {
-                                NodeOperationResult<ConversationNode> result = conversationDAO.updateConversationNode(
-                                        nodeRequestDTO.getUserId(),
-                                        nodeRequestDTO.getSessionName(),
-                                        nodeRequestDTO.getConversationNodeId(),
-                                        nodeRequestDTO.getContextStartIdx(),
-                                        nodeRequestDTO.getContextEndIdx(),
-                                        nodeRequestDTO.getUserMessage(),
-                                        completeResponse
-                                );
-                                if (!result.ifSuccess) {
-                                    return Mono.error(new RuntimeException("更新对话节点失败: " + result.note));
-                                }
-                                return Mono.empty();
-                            })
-                            .then();
-                    
-                    // 返回流式数据，同时确保保存操作执行
-                    return sharedFlux.mergeWith(saveOperation.then(Mono.empty()));
-                });
+                .doOnNext(token -> {
+                    // 直接追加token，保持原始格式包括换行符
+                    responseBuilder.get().append(token);
+                })
+                .doOnComplete(() -> {
+                    // 流完成后异步保存，保持完整的原始响应格式
+                    String completeResponse = responseBuilder.get().toString();
+                    Mono.fromRunnable(() -> {
+                        NodeOperationResult<ConversationNode> result = conversationDAO.updateConversationNode(
+                                nodeRequestDTO.getUserId(),
+                                nodeRequestDTO.getSessionName(),
+                                nodeRequestDTO.getConversationNodeId(),
+                                nodeRequestDTO.getContextStartIdx(),
+                                nodeRequestDTO.getContextEndIdx(),
+                                nodeRequestDTO.getUserMessage(),
+                                completeResponse // 保持原始格式，包括\n换行符
+                        );
+                        if (!result.ifSuccess) {
+                            System.err.println("更新对话节点失败: " + result.note);
+                        }
+                    })
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .doOnError(error -> System.err.println("保存对话节点时出错: " + error.getMessage()))
+                    .onErrorResume(error -> Mono.empty())
+                    .subscribe();
+                })
+                .doOnError(error -> System.err.println("处理对话时出错: " + error.getMessage()));
     }
 
     @Override

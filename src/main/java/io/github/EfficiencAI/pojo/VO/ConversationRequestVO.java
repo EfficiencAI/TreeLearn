@@ -3,8 +3,10 @@ package io.github.EfficiencAI.pojo.VO;
 import io.github.EfficiencAI.pojo.DTO.ChatRequestDTO;
 import io.github.EfficiencAI.pojo.DTO.NodeRequestDTO;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 public class ConversationRequestVO {
     private String userId;
     private String sessionName;
