@@ -27,6 +27,7 @@ public interface UserService {
     Mono<NodeOperationResult<SessionNode>> deleteSession(String userId, String sessionName);
     
     // 对话节点管理
+    Mono<NodeOperationResult<String>> registryForNewConversationNode(String userId, String sessionName, String parentId);
     Flux<String> addConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO);
     Flux<String> updateConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO);
     Mono<NodeOperationResult<ConversationNode>> deleteConversationNode(String userId, String sessionName, String conversationNodeId);

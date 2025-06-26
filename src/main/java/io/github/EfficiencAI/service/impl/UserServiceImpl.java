@@ -71,7 +71,10 @@ public class UserServiceImpl implements UserService {
     public Mono<NodeOperationResult<SessionNode>> deleteSession(String userId, String sessionName) {
         return Mono.fromCallable(() -> conversationDAO.deleteSession(userId, sessionName));
     }
-
+    @Override
+    public Mono<NodeOperationResult<String>> registryForNewConversationNode(String userId, String sessionName, String parentId) {
+        return Mono.fromCallable(() -> conversationDAO.registryForNewConversationNode(userId, sessionName, parentId));
+    }
 
     @Override
     public Flux<String> addConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO) {

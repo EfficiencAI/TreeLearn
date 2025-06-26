@@ -535,7 +535,83 @@ public class ConversationDAO {
         );
     }
 
+    public NodeOperationResult<String> registryForNewConversationNode(String userID, String sessionName, String parentId) {
+        //获取会话节点
+        SessionNode sessionNode;
+        if((sessionNode = getSessionNodeSafetyWithCache(userID, sessionName)) == null){
+            return figureOutGetSessionNodeFailureReason(userID, sessionName);
+        }
 
+        //查询并生成可用且唯一的对话ID
+        if(parentId == null){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.CREATE,
+                    null,
+                    false,
+                    "父节点ID传输出错"
+            );
+        }
+        String newConversationNodeID = parentId;
+        if(parentId.equals("-1")){
+            boolean hasFoundAvailableID = false;
+            for(IDElementComposition idElementComposition : IDElementComposition.values()){
+                if(!sessionNode.getAllConversationNodesID().contains(idElementComposition.toString())){
+                    hasFoundAvailableID = true;
+                    newConversationNodeID = idElementComposition.toString();
+                    break;
+                }
+            }
+            if(!hasFoundAvailableID){
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.CREATE,
+                        null,
+                        false,
+                        "子节点数超过上限，无法创建新的对话节点"
+                );
+            }
+        }
+        else{
+            if(!sessionNode.getAllConversationNodesID().contains(parentId)){
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.CREATE,
+                        null,
+                        false,
+                        "父节点不存在"
+                );
+            }
+            ConversationNode parentConversationNode = sessionNode.getAllConversationNodes().get(parentId);
+            if(parentConversationNode == null){
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.CREATE,
+                        null,
+                        false,
+                        "父节点信息获取失败"
+                );
+            }
+            boolean hasFoundAvailableID = false;
+            for(IDElementComposition idElementComposition : IDElementComposition.values()){
+                if(!sessionNode.getAllConversationNodesID().contains(parentId + idElementComposition)){
+                    hasFoundAvailableID = true;
+                    newConversationNodeID = parentId + idElementComposition;
+                    break;
+                }
+            }
+            if(!hasFoundAvailableID){
+                return new NodeOperationResult<>(
+                        NodeOperationResult.OperationType.CREATE,
+                        null,
+                        false,
+                        "子节点数超过上限，无法创建新的对话节点"
+                );
+            }
+        }
+        return new NodeOperationResult<>(
+                NodeOperationResult.OperationType.CREATE,
+                newConversationNodeID,
+                true,
+                "对话节点注册成功"
+        );
+    }
 
     /**
      * 添加新的对话节点

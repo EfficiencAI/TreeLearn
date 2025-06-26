@@ -102,6 +102,16 @@ public class UserController {
     }
     
     // 对话节点管理接口
+    @GetMapping("/conversation/registryForNewConversationNode")
+    public Mono<Result> registryForNewConversationNode(@RequestParam String userId,
+                                                       @RequestParam String sessionName,
+                                                       @RequestParam String parentId) {
+        return userService.registryForNewConversationNode(userId, sessionName, parentId)
+               .map(result ->
+                        result.ifSuccess?
+                                Result.success(result.returnValue) :
+                                Result.error(result.note));
+    }
     @PostMapping("/conversation/add")
     public Flux<String> addConversationNode(@RequestBody ConversationRequestVO conversationRequestVO) {
         System.out.println(conversationRequestVO);
