@@ -12,7 +12,6 @@ public class ConversationRequestVO {
     private String sessionName;
     private String conversationNodeId;
     private String parentId;
-    private String userMessage;
     private String contextStartIdx;
     private String contextEndIdx;
 
@@ -29,8 +28,8 @@ public class ConversationRequestVO {
                 .userId(userId)
                 .sessionName(sessionName)
                 .conversationNodeId(conversationNodeId)
+                .userMessage(message)
                 .parentId(parentId)
-                .userMessage(userMessage)
                 .contextStartIdx(contextStartIdx)
                 .contextEndIdx(contextEndIdx)
                 .build();

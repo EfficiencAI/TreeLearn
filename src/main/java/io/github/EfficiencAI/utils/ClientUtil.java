@@ -1,5 +1,6 @@
 package io.github.EfficiencAI.utils;
 
+import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.mcp.McpToolProvider;
 import dev.langchain4j.mcp.client.DefaultMcpClient;
 import dev.langchain4j.mcp.client.McpClient;
@@ -7,6 +8,7 @@ import dev.langchain4j.mcp.client.transport.McpTransport;
 import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
+import dev.langchain4j.model.openai.internal.chat.Message;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.tool.ToolProvider;
 import io.github.EfficiencAI.pojo.DTO.ChatRequestDTO;
@@ -24,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientUtil {
     public interface ChatClient {
-        Flux<String> chat(String... messages);
+        Flux<String> chat(ChatMessage... messages);
     }
 
     private static StreamingChatModel openAiChatModel(ChatRequestDTO chatRequestDTO) {

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
-
 import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -73,12 +72,13 @@ public class UserServiceImpl implements UserService {
         return Mono.fromCallable(() -> conversationDAO.deleteSession(userId, sessionName));
     }
 
+
     @Override
     public Flux<String> addConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO) {
-        // 使用AtomicReference来收集完整响应，保持原始格式
+
         AtomicReference<StringBuilder> responseBuilder = new AtomicReference<>(new StringBuilder());
         
-        return aiService.chat(chatRequestDTO)
+        return aiService.chat(buildContext(nodeRequestDTO, chatRequestDTO))
                 .doOnNext(token -> {
                     // 直接追加token，保持原始格式包括换行符
                     responseBuilder.get().append(token);
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
         // 使用AtomicReference来收集完整响应，保持原始格式
         AtomicReference<StringBuilder> responseBuilder = new AtomicReference<>(new StringBuilder());
         
-        return aiService.chat(chatRequestDTO)
+        return aiService.chat(buildContext(nodeRequestDTO, chatRequestDTO))
                 .doOnNext(token -> {
                     // 直接追加token，保持原始格式包括换行符
                     responseBuilder.get().append(token);
@@ -142,6 +142,98 @@ public class UserServiceImpl implements UserService {
                 })
                 .doOnError(error -> System.err.println("处理对话时出错: " + error.getMessage()));
     }
+
+    private ChatRequestDTO buildContext(NodeRequestDTO nodeRequestDTO,ChatRequestDTO chatRequestDTO) {
+        // 如果parentId为-1，表示是根节点，无需上下文
+        if ("-1".equals(nodeRequestDTO.getParentId())) {
+            return ChatRequestDTO.builder()
+                    .systemPrompt(chatRequestDTO.getSystemPrompt())
+                    .apikey(chatRequestDTO.getApikey())
+                    .modelName(chatRequestDTO.getModelName())
+                    .baseurl(chatRequestDTO.getBaseurl())
+                    .message(chatRequestDTO.getMessage())
+                    .mcpUrls(chatRequestDTO.getMcpUrls())
+                    .build();
+        }
+        try {
+            // 获取父节点信息
+            NodeOperationResult<ConversationNode> parentResult = conversationDAO.getConversationNode(
+                    nodeRequestDTO.getUserId(),
+                    nodeRequestDTO.getSessionName(),
+                    nodeRequestDTO.getParentId()
+            );
+            
+            if (!parentResult.ifSuccess || parentResult.returnValue == null) {
+                System.err.println("获取父节点失败: " + parentResult.note);
+                return null;
+            }
+            
+            ConversationNode parentNode = parentResult.returnValue;
+            String parentUserMessage = parentNode.getUserMessage();
+            String parentAIMessage = parentNode.getAIMessage();
+
+            String contextAIMessage = extractContextFromAIMessage(
+                    parentAIMessage,
+                    nodeRequestDTO.getContextStartIdx(),
+                    nodeRequestDTO.getContextEndIdx()
+            );
+
+            return ChatRequestDTO.builder()
+                    .systemPrompt(chatRequestDTO.getSystemPrompt())
+                    .apikey(chatRequestDTO.getApikey())
+                    .modelName(chatRequestDTO.getModelName())
+                    .baseurl(chatRequestDTO.getBaseurl())
+                    .message(chatRequestDTO.getMessage())
+                    .mcpUrls(chatRequestDTO.getMcpUrls())
+                    .contextAIMessage(contextAIMessage)
+                    .contextUserMessage(parentUserMessage)
+                    .build();
+
+
+            
+        } catch (Exception e) {
+            System.err.println("构建上下文时出错: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // 新增方法：从AI消息中提取上下文
+    private String extractContextFromAIMessage(String aiMessage, String startIdx, String endIdx) {
+        if (aiMessage == null || aiMessage.isEmpty()) {
+            return "";
+        }
+
+        try {
+            int start = 0;
+            int end = aiMessage.length();
+
+            // 解析起始索引
+            if (startIdx != null && !startIdx.isEmpty()) {
+                int startIndex = Integer.parseInt(startIdx);
+                if (startIndex >= 0 && startIndex < aiMessage.length()) {
+                    start = startIndex;
+                }
+            }
+
+            // 解析结束索引
+            if (endIdx != null && !endIdx.isEmpty()) {
+                int endIndex = Integer.parseInt(endIdx);
+                if (endIndex > start && endIndex <= aiMessage.length()) {
+                    end = endIndex;
+                }
+            }
+
+            return aiMessage.substring(start, end);
+
+        } catch (NumberFormatException e) {
+            System.err.println("解析上下文索引失败: " + e.getMessage());
+            return aiMessage; // 如果解析失败，返回完整消息
+        } catch (StringIndexOutOfBoundsException e) {
+            System.err.println("上下文索引超出范围: " + e.getMessage());
+            return aiMessage; // 如果索引超出范围，返回完整消息
+        }
+    }
+
 
     @Override
     public Mono<NodeOperationResult<ConversationNode>> deleteConversationNode(String userId, String sessionName, String conversationNodeId) {

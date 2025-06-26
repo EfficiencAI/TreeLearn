@@ -12,4 +12,6 @@ public class ChatRequestDTO {
     private String baseurl;
     private String message;
     private String[] mcpUrls;
+    private String contextUserMessage;
+    private String contextAIMessage;
 }

@@ -11,7 +11,7 @@ public class ChatRequestVO {
     private String modelName;
     private String[] mcpUrls;
     private String userId;
-    private String sessionName; // 新增会话名称
+    private String sessionName;
     private String systemPrompt;
 
     public ChatRequestDTO toDTO() {
