@@ -7,6 +7,7 @@ import io.github.EfficiencAI.pojo.DTO.UserDTO;
 import io.github.EfficiencAI.pojo.Entites.node.ConversationNode;
 import io.github.EfficiencAI.pojo.Entites.node.SessionNode;
 import io.github.EfficiencAI.pojo.Entites.node.UserNode;
+import io.github.EfficiencAI.pojo.VO.ConversationNodeRegisterResult;
 import io.github.EfficiencAI.pojo.VO.NodeOperationResult;
 import io.github.EfficiencAI.service.AiService;
 import io.github.EfficiencAI.service.UserService;
@@ -72,8 +73,8 @@ public class UserServiceImpl implements UserService {
         return Mono.fromCallable(() -> conversationDAO.deleteSession(userId, sessionName));
     }
     @Override
-    public Mono<NodeOperationResult<String>> registryForNewConversationNode(String userId, String sessionName, String parentId) {
-        return Mono.fromCallable(() -> conversationDAO.registryForNewConversationNode(userId, sessionName, parentId));
+    public Mono<NodeOperationResult<ConversationNodeRegisterResult>> registerForNewConversationNode(String userId, String sessionName, String parentId) {
+        return Mono.fromCallable(() -> conversationDAO.registerForNewConversationNode(userId, sessionName, parentId));
     }
 
     @Override
@@ -93,6 +94,7 @@ public class UserServiceImpl implements UserService {
                         NodeOperationResult<ConversationNode> result = conversationDAO.newConversationNode(
                                 nodeRequestDTO.getUserId(),
                                 nodeRequestDTO.getSessionName(),
+                                nodeRequestDTO.getRegistrationCertificate(),
                                 nodeRequestDTO.getParentId(),
                                 nodeRequestDTO.getContextStartIdx(),
                                 nodeRequestDTO.getContextEndIdx(),

@@ -6,6 +6,7 @@ import io.github.EfficiencAI.pojo.DTO.UserDTO;
 import io.github.EfficiencAI.pojo.Entites.node.ConversationNode;
 import io.github.EfficiencAI.pojo.Entites.node.SessionNode;
 import io.github.EfficiencAI.pojo.Entites.node.UserNode;
+import io.github.EfficiencAI.pojo.VO.ConversationNodeRegisterResult;
 import io.github.EfficiencAI.pojo.VO.NodeOperationResult;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,7 +28,7 @@ public interface UserService {
     Mono<NodeOperationResult<SessionNode>> deleteSession(String userId, String sessionName);
     
     // 对话节点管理
-    Mono<NodeOperationResult<String>> registryForNewConversationNode(String userId, String sessionName, String parentId);
+    Mono<NodeOperationResult<ConversationNodeRegisterResult>> registerForNewConversationNode(String userId, String sessionName, String parentId);
     Flux<String> addConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO);
     Flux<String> updateConversationNode(NodeRequestDTO nodeRequestDTO, ChatRequestDTO chatRequestDTO);
     Mono<NodeOperationResult<ConversationNode>> deleteConversationNode(String userId, String sessionName, String conversationNodeId);

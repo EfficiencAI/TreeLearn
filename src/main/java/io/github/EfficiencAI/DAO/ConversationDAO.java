@@ -3,6 +3,7 @@ package io.github.EfficiencAI.DAO;
 import io.github.EfficiencAI.pojo.Entites.node.ConversationNode;
 import io.github.EfficiencAI.pojo.Entites.node.SessionNode;
 import io.github.EfficiencAI.pojo.Entites.node.UserNode;
+import io.github.EfficiencAI.pojo.VO.ConversationNodeRegisterResult;
 import io.github.EfficiencAI.pojo.VO.NodeOperationResult;
 import io.github.EfficiencAI.pojo.DTO.UserDTO;
 import io.github.EfficiencAI.utils.Cache.ConversationDAOCache;
@@ -10,16 +11,19 @@ import io.github.EfficiencAI.utils.IDElementComposition;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 
 @Component
 public class ConversationDAO {
     public ConversationDAO() {
         nodesCache = new ConversationDAOCache();
+        registeredConversationNodeIDs = new HashMap<>();
     }
     private final static String USER_NODE_STORAGE_PATH = "./Saves/Users/";
     private final static String DEFAULT_SESSION_NODE_STORAGE_PATH = "./Saves/Sessions/";
 
+    private final HashMap<String, String> registeredConversationNodeIDs;
     private final ConversationDAOCache nodesCache;
     private UserNode getUserNodeSafetyWithCache(String userID){
         if(userID == null){
@@ -535,7 +539,7 @@ public class ConversationDAO {
         );
     }
 
-    public NodeOperationResult<String> registryForNewConversationNode(String userID, String sessionName, String parentId) {
+    public NodeOperationResult<ConversationNodeRegisterResult> registerForNewConversationNode(String userID, String sessionName, String parentId) {
         //获取会话节点
         SessionNode sessionNode;
         if((sessionNode = getSessionNodeSafetyWithCache(userID, sessionName)) == null){
@@ -555,7 +559,9 @@ public class ConversationDAO {
         if(parentId.equals("-1")){
             boolean hasFoundAvailableID = false;
             for(IDElementComposition idElementComposition : IDElementComposition.values()){
-                if(!sessionNode.getAllConversationNodesID().contains(idElementComposition.toString())){
+                if(!sessionNode.getAllConversationNodesID().contains(idElementComposition.toString())
+                    && !registeredConversationNodeIDs.containsValue(idElementComposition.toString())
+                ){
                     hasFoundAvailableID = true;
                     newConversationNodeID = idElementComposition.toString();
                     break;
@@ -605,9 +611,16 @@ public class ConversationDAO {
                 );
             }
         }
+        //记录已分配的对话ID
+        String registrationCertificate = newConversationNodeID + "-" + System.currentTimeMillis();
+        registeredConversationNodeIDs.put(registrationCertificate, newConversationNodeID);
+
         return new NodeOperationResult<>(
                 NodeOperationResult.OperationType.CREATE,
-                newConversationNodeID,
+                new ConversationNodeRegisterResult(
+                        newConversationNodeID,
+                        registrationCertificate
+                ),
                 true,
                 "对话节点注册成功"
         );
@@ -624,7 +637,7 @@ public class ConversationDAO {
      * @param AIMessage AI消息
      * @return 对话操作结果
      */
-    public NodeOperationResult<ConversationNode> newConversationNode(String userID, String sessionName, String parentId, String contextStartIdx, String contextEndIdx, String userMessage, String AIMessage) {
+    public NodeOperationResult<ConversationNode> newConversationNode(String userID, String sessionName, String registrationCertificate,String parentId, String contextStartIdx, String contextEndIdx, String userMessage, String AIMessage) {
         //获取用户节点
         UserNode userNode;
         if((userNode = getUserNodeSafetyWithCache(userID)) == null){
@@ -636,70 +649,24 @@ public class ConversationDAO {
             return figureOutGetSessionNodeFailureReason(userID, sessionName);
         }
 
-        //查询并生成可用且唯一的对话ID
-        if(parentId == null){
+        //查询注册凭证对应的ID
+        if(registrationCertificate == null){
             return new NodeOperationResult<>(
                     NodeOperationResult.OperationType.CREATE,
                     null,
                     false,
-                    "父节点ID传输出错"
+                    "节点注册凭证传输出错"
             );
         }
-        String newConversationNodeID = parentId;
-        if(parentId.equals("-1")){
-            boolean hasFoundAvailableID = false;
-            for(IDElementComposition idElementComposition : IDElementComposition.values()){
-                if(!sessionNode.getAllConversationNodesID().contains(idElementComposition.toString())){
-                    hasFoundAvailableID = true;
-                    newConversationNodeID = idElementComposition.toString();
-                    break;
-                }
-            }
-            if(!hasFoundAvailableID){
-                return new NodeOperationResult<>(
-                        NodeOperationResult.OperationType.CREATE,
-                        null,
-                        false,
-                        "子节点数超过上限，无法创建新的对话节点"
-                );
-            }
+        String newConversationNodeID = registeredConversationNodeIDs.get(registrationCertificate);
+        if(newConversationNodeID == null){
+            return new NodeOperationResult<>(
+                    NodeOperationResult.OperationType.CREATE,
+                    null,
+                    false,
+                    "节点注册凭证无效"
+            );
         }
-        else{
-            if(!sessionNode.getAllConversationNodesID().contains(parentId)){
-                return new NodeOperationResult<>(
-                        NodeOperationResult.OperationType.CREATE,
-                        null,
-                        false,
-                        "父节点不存在"
-                );
-            }
-            ConversationNode parentConversationNode = sessionNode.getAllConversationNodes().get(parentId);
-            if(parentConversationNode == null){
-                return new NodeOperationResult<>(
-                        NodeOperationResult.OperationType.CREATE,
-                        null,
-                        false,
-                        "父节点信息获取失败"
-                );
-            }
-            boolean hasFoundAvailableID = false;
-            for(IDElementComposition idElementComposition : IDElementComposition.values()){
-                if(!sessionNode.getAllConversationNodesID().contains(parentId + idElementComposition)){
-                    hasFoundAvailableID = true;
-                    newConversationNodeID = parentId + idElementComposition;
-                    break;
-                }
-            }
-            if(!hasFoundAvailableID){
-                return new NodeOperationResult<>(
-                        NodeOperationResult.OperationType.CREATE,
-                        null,
-                        false,
-                        "子节点数超过上限，无法创建新的对话节点"
-                );
-            }
-        }
-
         //检查是否存在信息缺失
         if (contextStartIdx == null || contextEndIdx == null) {
             return new NodeOperationResult<>(

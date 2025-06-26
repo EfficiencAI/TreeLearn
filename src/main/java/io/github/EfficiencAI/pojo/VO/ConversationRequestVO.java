@@ -11,6 +11,7 @@ public class ConversationRequestVO {
     private String userId;
     private String sessionName;
     private String conversationNodeId;
+    private String registrationCertificate;
     private String parentId;
     private String contextStartIdx;
     private String contextEndIdx;
@@ -28,6 +29,7 @@ public class ConversationRequestVO {
                 .userId(userId)
                 .sessionName(sessionName)
                 .conversationNodeId(conversationNodeId)
+                .registrationCertificate(registrationCertificate)
                 .userMessage(message)
                 .parentId(parentId)
                 .contextStartIdx(contextStartIdx)

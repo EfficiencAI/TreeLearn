@@ -102,11 +102,11 @@ public class UserController {
     }
     
     // 对话节点管理接口
-    @GetMapping("/conversation/registryForNewConversationNode")
-    public Mono<Result> registryForNewConversationNode(@RequestParam String userId,
+    @GetMapping("/conversation/registerForNewConversationNode")
+    public Mono<Result> registerForNewConversationNode(@RequestParam String userId,
                                                        @RequestParam String sessionName,
                                                        @RequestParam String parentId) {
-        return userService.registryForNewConversationNode(userId, sessionName, parentId)
+        return userService.registerForNewConversationNode(userId, sessionName, parentId)
                .map(result ->
                         result.ifSuccess?
                                 Result.success(result.returnValue) :

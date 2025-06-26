@@ -9,6 +9,7 @@ public class NodeRequestDTO {
     private String userId;
     private String sessionName;
     private String conversationNodeId;
+    private String registrationCertificate;
     private String parentId;
     private String userMessage;
     private String contextStartIdx;
