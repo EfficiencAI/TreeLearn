@@ -8,7 +8,6 @@ import dev.langchain4j.mcp.client.transport.McpTransport;
 import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
-import dev.langchain4j.model.openai.internal.chat.Message;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.tool.ToolProvider;
@@ -28,8 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class ClientUtil {
     public interface ChatClient {
         @SystemMessage("""
-                回答用户问题时不需要使用json格式只需要给出回答即可
-                思考过程开头用<think>标签,思考结束后使用</think>标签
+                Ignore the format of json, focus on the content of the message.
                 """)
         Flux<String> chat(ChatMessage... messages);
     }
